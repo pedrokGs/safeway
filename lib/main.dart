@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:safeway/core/configs/app_router.dart';
 import 'package:safeway/core/configs/firebase_options_dev.dart';
+import 'package:safeway/core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,9 +24,8 @@ class SafewayApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
 
-      // TODO: Implementar AppThemes no lugar de ThemeData e ThemeData.dark
-      theme: ThemeData(),
-      darkTheme: ThemeData.dark(),
+      theme: AppTheme.getTheme(false),
+      darkTheme: AppTheme.getTheme(true),
       routerConfig: AppRouter.router,
     );
   }
