@@ -23,6 +23,7 @@ class TestPage extends StatelessWidget {
         BottomNavigationBarItem(
           label: 'Lol Lmao',
           tooltip: 'XD ez bro so ez',
+          icon: Icon(Icons.face_2_outlined)
             ),
       ]),
     );
