@@ -23,7 +23,6 @@ class SafewayApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
 
-      // TODO: Implementar AppThemes no lugar de ThemeData e ThemeData.dark
       theme: ThemeData(),
       darkTheme: ThemeData.dark(),
       routerConfig: AppRouter.router,
