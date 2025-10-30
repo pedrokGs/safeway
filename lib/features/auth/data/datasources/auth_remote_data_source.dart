@@ -14,7 +14,7 @@ abstract interface class AuthRemoteDataSource{
   Future<String> signUpWithEmailAndPassword({required String email, required String password});
 
   // Tenta fazer sign out e retorna se teve sucesso;
-  Future<bool> signOut();
+  Future<void> signOut();
 
   // Tenta fazer login com google (google_sign_in) e retorna ID do usuário;
   Future<String> signInWithGoogle();

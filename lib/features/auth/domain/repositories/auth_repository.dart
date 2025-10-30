@@ -14,7 +14,7 @@ abstract interface class AuthRepository{
   Future<String> signUpWithEmailAndPassword({required String email, required String password});
 
   // Retorna bool (sucesso ou não)
-  Future<bool> signOut();
+  Future<void> signOut();
 
   // Retorna o ID do usuário para realizar um fetch info
   Future<String> signInWithGoogle();

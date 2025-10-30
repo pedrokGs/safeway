@@ -20,26 +20,14 @@ void main(){
     addTearDown(providerContainer.dispose);
   },);
 
-  test('should return true when repository returns true', () async {
+  test('should complete when repository succeeds', () async {
     when(() => mockAuthRepository.signOut(),).thenAnswer((_) async => true,);
 
     final signOutUseCase = providerContainer.read(signOutUseCaseProvider);
 
-    final result = await signOutUseCase.call();
+    await signOutUseCase.call();
 
-    expect(result, true);
     verify(() => mockAuthRepository.signOut()).called(1);
-  },);
-
-  test('should return false when repository returns false', () async {
-    when(() => mockAuthRepository.signOut()).thenAnswer((_) async => false);
-
-    final signOutUseCase = providerContainer.read(signOutUseCaseProvider);
-
-    final result = await signOutUseCase.call();
-
-    expect(result, false);
-    verify(() => mockAuthRepository.signOut(),);
   },);
 
   test('should return an exception when repository throws an DatasourceException', () async {

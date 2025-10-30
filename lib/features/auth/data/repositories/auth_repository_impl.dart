@@ -43,7 +43,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<bool> signOut() async {
+  Future<void> signOut() async {
     return await dataSource.signOut();
   }
 

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:safeway/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:safeway/features/auth/data/datasources/auth_remote_data_source_firebase.dart';
 import 'package:safeway/features/auth/data/repositories/auth_repository_impl.dart';
@@ -12,7 +13,8 @@ import 'package:safeway/features/auth/domain/use_cases/sign_up_with_email_and_pa
 
 // Data
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance,);
-final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>((ref) => AuthRemoteDataSourceFirebase(firebaseAuth: ref.watch(firebaseAuthProvider)),);
+final googleSignInProvider = Provider<GoogleSignIn>((ref) => GoogleSignIn.instance,);
+final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>((ref) => AuthRemoteDataSourceFirebase(googleSignIn: ref.watch(googleSignInProvider), firebaseAuth: ref.watch(firebaseAuthProvider)));
 final authRepositoryProvider = Provider<AuthRepository>((ref) => AuthRepositoryImpl(dataSource: ref.watch(authRemoteDataSourceProvider)),);
 
 // Use Cases

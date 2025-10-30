@@ -7,7 +7,7 @@ import 'package:safeway/features/auth/data/models/auth_user_model.dart';
 import 'package:safeway/features/auth/domain/entities/auth_user_entity.dart';
 import 'package:safeway/features/auth/domain/exceptions/data_source_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/invalid_credentials_exception.dart';
-import 'package:safeway/features/auth/domain/exceptions/network_exception.dart';
+import 'package:safeway/features/auth/domain/exceptions/network_request_failed_exception.dart';
 
 class MockRemoteDataSource extends Mock implements AuthRemoteDataSource {}
 
@@ -153,7 +153,7 @@ void main() {
             email: any(named: 'email'),
             password: any(named: 'password'),
           ),
-        ).thenThrow(NetworkException());
+        ).thenThrow(NetworkRequestFailedException());
 
         final repository = providerContainer.read(authRepositoryProvider);
 
@@ -162,7 +162,7 @@ void main() {
             email: tEmail,
             password: tPassword,
           ),
-          throwsA(isA<NetworkException>()),
+          throwsA(isA<NetworkRequestFailedException>()),
         );
         verify(
           () => mockRemoteDataSource.signInWithEmailAndPassword(
@@ -266,7 +266,7 @@ void main() {
             email: any(named: 'email'),
             password: any(named: 'password'),
           ),
-        ).thenThrow(NetworkException());
+        ).thenThrow(NetworkRequestFailedException());
 
         final repository = providerContainer.read(authRepositoryProvider);
 
@@ -275,7 +275,7 @@ void main() {
             email: tEmail,
             password: tPassword,
           ),
-          throwsA(isA<NetworkException>()),
+          throwsA(isA<NetworkRequestFailedException>()),
         );
         verify(
           () => mockRemoteDataSource.signUpWithEmailAndPassword(
@@ -358,13 +358,13 @@ void main() {
       () async {
         when(
           () => mockRemoteDataSource.signInWithGoogle(),
-        ).thenThrow(NetworkException());
+        ).thenThrow(NetworkRequestFailedException());
 
         final repository = providerContainer.read(authRepositoryProvider);
 
         expectLater(
           repository.signInWithGoogle(),
-          throwsA(isA<NetworkException>()),
+          throwsA(isA<NetworkRequestFailedException>()),
         );
 
         verify(() => mockRemoteDataSource.signInWithGoogle()).called(1);
@@ -414,13 +414,13 @@ void main() {
           () => mockRemoteDataSource.sendResetPasswordEmail(
             email: any(named: 'email'),
           ),
-        ).thenThrow(NetworkException());
+        ).thenThrow(NetworkRequestFailedException());
 
         final repository = providerContainer.read(authRepositoryProvider);
 
         expectLater(
           repository.sendResetPasswordEmail(email: tEmail),
-          throwsA(isA<NetworkException>()),
+          throwsA(isA<NetworkRequestFailedException>()),
         );
 
         verify(
