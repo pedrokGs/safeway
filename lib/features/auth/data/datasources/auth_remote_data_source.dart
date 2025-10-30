@@ -20,5 +20,5 @@ abstract interface class AuthRemoteDataSource{
   Future<String> signInWithGoogle();
 
   // Tenta enviar email para resetar password e retorna se teve sucesso;
-  Future<bool> sendResetPasswordEmail({required String email});
+  Future<void> sendResetPasswordEmail({required String email});
 }

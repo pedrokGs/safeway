@@ -20,6 +20,6 @@ abstract interface class AuthRepository{
   Future<String> signInWithGoogle();
 
   // Retorna bool (sucesso ou não)
-  Future<bool> sendResetPasswordEmail({required String email});
+  Future<void> sendResetPasswordEmail({required String email});
 
 }

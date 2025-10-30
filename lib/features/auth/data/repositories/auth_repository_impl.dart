@@ -22,7 +22,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<bool> sendResetPasswordEmail({required String email}) async {
+  Future<void> sendResetPasswordEmail({required String email}) async {
     return await dataSource.sendResetPasswordEmail(email: email);
   }
 

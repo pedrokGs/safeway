@@ -11,17 +11,19 @@ import 'package:safeway/features/auth/domain/exceptions/network_exception.dart';
 
 class MockRemoteDataSource extends Mock implements AuthRemoteDataSource {}
 
-void main(){
+void main() {
   late ProviderContainer providerContainer;
   late MockRemoteDataSource mockRemoteDataSource;
 
   setUp(() {
     mockRemoteDataSource = MockRemoteDataSource();
-    providerContainer = ProviderContainer(overrides: [
-      authRemoteDataSourceProvider.overrideWithValue(mockRemoteDataSource)
-    ]);
+    providerContainer = ProviderContainer(
+      overrides: [
+        authRemoteDataSourceProvider.overrideWithValue(mockRemoteDataSource),
+      ],
+    );
     addTearDown(providerContainer.dispose);
-  },);
+  });
 
   final String tId = "testId";
   final String tEmail = 'test@gmail.com';
@@ -30,163 +32,288 @@ void main(){
 
   group('authUserChanges', () {
     test('emits AuthUserEntity when a user is logged in', () async {
-      when(() => mockRemoteDataSource.authUserChanges).thenAnswer((_) => Stream.fromIterable([mockUser]),);
+      when(
+        () => mockRemoteDataSource.authUserChanges,
+      ).thenAnswer((_) => Stream.fromIterable([mockUser]));
 
       final repository = providerContainer.read(authRepositoryProvider);
 
       final expected = AuthUserEntity(id: tId, email: tEmail);
 
       expectLater(repository.authUserChanges, emits(expected));
-    },);
+    });
 
     test('emits null when user logs out (stream is null', () async {
-      when(() => mockRemoteDataSource.authUserChanges).thenAnswer((_) => Stream.fromIterable([null]),);
+      when(
+        () => mockRemoteDataSource.authUserChanges,
+      ).thenAnswer((_) => Stream.fromIterable([null]));
 
       final repository = providerContainer.read(authRepositoryProvider);
 
       expectLater(repository.authUserChanges, emits(null));
-    },);
+    });
 
     test('emits multiple events in order', () async {
-      when(() => mockRemoteDataSource.authUserChanges).thenAnswer((_) => Stream.fromIterable([null, mockUser, null]),);
+      when(
+        () => mockRemoteDataSource.authUserChanges,
+      ).thenAnswer((_) => Stream.fromIterable([null, mockUser, null]));
 
       final repository = providerContainer.read(authRepositoryProvider);
 
-      final expected = [
-        null,
-        AuthUserEntity(id: tId, email: tEmail),
-        null
-      ];
+      final expected = [null, AuthUserEntity(id: tId, email: tEmail), null];
 
       await expectLater(repository.authUserChanges, emitsInOrder(expected));
-    },);
-  },);
+    });
+  });
 
   group('currentUser', () {
+    test('should return an AuthUserEntity if currentUser is not null', () {
+      when(() => mockRemoteDataSource.currentUser).thenReturn(mockUser);
 
-  },);
+      final repository = providerContainer.read(authRepositoryProvider);
+
+      final expected = AuthUserEntity(id: tId, email: tEmail);
+
+      expect(repository.currentUser, equals(expected));
+    });
+
+    test(
+      'should return an empty AuthUserEntity when currentUser returns null',
+      () {
+        when(() => mockRemoteDataSource.currentUser).thenReturn(null);
+
+        final repository = providerContainer.read(authRepositoryProvider);
+
+        expect(repository.currentUser, null);
+      },
+    );
+  });
 
   group('signInWithEmailAndPassword', () {
-    test('should return an String id when operation is successful, should also pass correct values', () async {
-      when(() => mockRemoteDataSource.signInWithEmailAndPassword(email: any(named: 'email'), password: any(named: 'password'))).thenAnswer((_) async => tId,);
+    test(
+      'should return an String id when operation is successful, should also pass correct values',
+      () async {
+        when(
+          () => mockRemoteDataSource.signInWithEmailAndPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        ).thenAnswer((_) async => tId);
 
-      final repository = providerContainer.read(authRepositoryProvider);
+        final repository = providerContainer.read(authRepositoryProvider);
 
-      final result = await repository.signInWithEmailAndPassword(email: tEmail, password: tPassword);
+        final result = await repository.signInWithEmailAndPassword(
+          email: tEmail,
+          password: tPassword,
+        );
 
-      expect(result, equals(tId));
-      verify(() => mockRemoteDataSource.signInWithEmailAndPassword(email: tEmail, password: tPassword)).called(1);
-      },);
-    
-    test('should return exception when datasource throws InvalidCredentialsException', () async {
-      when(() =>
-          mockRemoteDataSource.signInWithEmailAndPassword(
-              email: any(named: 'email'), password: any(named: 'password')))
-          .thenThrow(InvalidCredentialsException());
+        expect(result, equals(tId));
+        verify(
+          () => mockRemoteDataSource.signInWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+        ).called(1);
+      },
+    );
 
-      final repository = providerContainer.read(authRepositoryProvider);
+    test(
+      'should return exception when datasource throws InvalidCredentialsException',
+      () async {
+        when(
+          () => mockRemoteDataSource.signInWithEmailAndPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        ).thenThrow(InvalidCredentialsException());
 
-      expectLater(repository.signInWithEmailAndPassword(
-          email: tEmail, password: tPassword),
-          throwsA(isA<InvalidCredentialsException>()));
-      verify(() =>
-          mockRemoteDataSource.signInWithEmailAndPassword(
-              email: tEmail, password: tPassword),).called(1);
-    },);
+        final repository = providerContainer.read(authRepositoryProvider);
 
-    test('should return exception when datasource throws NetworkException', () async {
-      when(() =>
-          mockRemoteDataSource.signInWithEmailAndPassword(
-              email: any(named: 'email'), password: any(named: 'password')))
-          .thenThrow(NetworkException());
+        expectLater(
+          repository.signInWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+          throwsA(isA<InvalidCredentialsException>()),
+        );
+        verify(
+          () => mockRemoteDataSource.signInWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+        ).called(1);
+      },
+    );
 
-      final repository = providerContainer.read(authRepositoryProvider);
+    test(
+      'should return exception when datasource throws NetworkException',
+      () async {
+        when(
+          () => mockRemoteDataSource.signInWithEmailAndPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        ).thenThrow(NetworkException());
 
-      expectLater(repository.signInWithEmailAndPassword(
-          email: tEmail, password: tPassword),
-          throwsA(isA<NetworkException>()));
-      verify(() =>
-          mockRemoteDataSource.signInWithEmailAndPassword(
-              email: tEmail, password: tPassword),).called(1);
-    },);
+        final repository = providerContainer.read(authRepositoryProvider);
 
-    test('should return an DataSourceException when datasource throws generic exception', () async {
-      when(() =>
-          mockRemoteDataSource.signInWithEmailAndPassword(
-              email: any(named: 'email'), password: any(named: 'password')))
-          .thenThrow(DataSourceException('test error'));
+        expectLater(
+          repository.signInWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+          throwsA(isA<NetworkException>()),
+        );
+        verify(
+          () => mockRemoteDataSource.signInWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+        ).called(1);
+      },
+    );
 
-      final repository = providerContainer.read(authRepositoryProvider);
+    test(
+      'should return an DataSourceException when datasource throws generic exception',
+      () async {
+        when(
+          () => mockRemoteDataSource.signInWithEmailAndPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        ).thenThrow(DataSourceException('test error'));
 
-      expectLater(repository.signInWithEmailAndPassword(
-          email: tEmail, password: tPassword),
-          throwsA(isA<DataSourceException>()));
-      verify(() =>
-          mockRemoteDataSource.signInWithEmailAndPassword(
-              email: tEmail, password: tPassword),).called(1);
-    },);
-  },);
+        final repository = providerContainer.read(authRepositoryProvider);
+
+        expectLater(
+          repository.signInWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+          throwsA(isA<DataSourceException>()),
+        );
+        verify(
+          () => mockRemoteDataSource.signInWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+        ).called(1);
+      },
+    );
+  });
 
   group('signUpWithEmailAndPassword', () {
-    test('should return an String id when operation is successful, should also pass correct values', () async {
-      when(() => mockRemoteDataSource.signUpWithEmailAndPassword(email: any(named: 'email'), password: any(named: 'password'))).thenAnswer((_) async => tId,);
+    test(
+      'should return an String id when operation is successful, should also pass correct values',
+      () async {
+        when(
+          () => mockRemoteDataSource.signUpWithEmailAndPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        ).thenAnswer((_) async => tId);
 
-      final repository = providerContainer.read(authRepositoryProvider);
+        final repository = providerContainer.read(authRepositoryProvider);
 
-      final result = await repository.signUpWithEmailAndPassword(email: tEmail, password: tPassword);
+        final result = await repository.signUpWithEmailAndPassword(
+          email: tEmail,
+          password: tPassword,
+        );
 
-      expect(result, equals(tId));
-      verify(() => mockRemoteDataSource.signUpWithEmailAndPassword(email: tEmail, password: tPassword)).called(1);
-    },);
+        expect(result, equals(tId));
+        verify(
+          () => mockRemoteDataSource.signUpWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+        ).called(1);
+      },
+    );
 
-    test('should return exception when datasource throws InvalidCredentialsException', () async {
-      when(() =>
-          mockRemoteDataSource.signUpWithEmailAndPassword(
-              email: any(named: 'email'), password: any(named: 'password')))
-          .thenThrow(InvalidCredentialsException());
+    test(
+      'should return exception when datasource throws InvalidCredentialsException',
+      () async {
+        when(
+          () => mockRemoteDataSource.signUpWithEmailAndPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        ).thenThrow(InvalidCredentialsException());
 
-      final repository = providerContainer.read(authRepositoryProvider);
+        final repository = providerContainer.read(authRepositoryProvider);
 
-      expectLater(repository.signUpWithEmailAndPassword(
-          email: tEmail, password: tPassword),
-          throwsA(isA<InvalidCredentialsException>()));
-      verify(() =>
-          mockRemoteDataSource.signUpWithEmailAndPassword(
-              email: tEmail, password: tPassword),).called(1);
-    },);
+        expectLater(
+          repository.signUpWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+          throwsA(isA<InvalidCredentialsException>()),
+        );
+        verify(
+          () => mockRemoteDataSource.signUpWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+        ).called(1);
+      },
+    );
 
-    test('should return exception when datasource throws NetworkException', () async {
-      when(() =>
-          mockRemoteDataSource.signUpWithEmailAndPassword(
-              email: any(named: 'email'), password: any(named: 'password')))
-          .thenThrow(NetworkException());
+    test(
+      'should return exception when datasource throws NetworkException',
+      () async {
+        when(
+          () => mockRemoteDataSource.signUpWithEmailAndPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        ).thenThrow(NetworkException());
 
-      final repository = providerContainer.read(authRepositoryProvider);
+        final repository = providerContainer.read(authRepositoryProvider);
 
-      expectLater(repository.signUpWithEmailAndPassword(
-          email: tEmail, password: tPassword),
-          throwsA(isA<NetworkException>()));
-      verify(() =>
-          mockRemoteDataSource.signUpWithEmailAndPassword(
-              email: tEmail, password: tPassword),).called(1);
-    },);
+        expectLater(
+          repository.signUpWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+          throwsA(isA<NetworkException>()),
+        );
+        verify(
+          () => mockRemoteDataSource.signUpWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+        ).called(1);
+      },
+    );
 
-    test('should return an DataSourceException when datasource throws generic exception', () async {
-      when(() =>
-          mockRemoteDataSource.signUpWithEmailAndPassword(
-              email: any(named: 'email'), password: any(named: 'password')))
-          .thenThrow(DataSourceException('test error'));
+    test(
+      'should return an DataSourceException when datasource throws generic exception',
+      () async {
+        when(
+          () => mockRemoteDataSource.signUpWithEmailAndPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        ).thenThrow(DataSourceException('test error'));
 
-      final repository = providerContainer.read(authRepositoryProvider);
+        final repository = providerContainer.read(authRepositoryProvider);
 
-      expectLater(repository.signUpWithEmailAndPassword(
-          email: tEmail, password: tPassword),
-          throwsA(isA<DataSourceException>()));
-      verify(() =>
-          mockRemoteDataSource.signUpWithEmailAndPassword(
-              email: tEmail, password: tPassword),).called(1);
-    },);
-  },);
+        expectLater(
+          repository.signUpWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+          throwsA(isA<DataSourceException>()),
+        );
+        verify(
+          () => mockRemoteDataSource.signUpWithEmailAndPassword(
+            email: tEmail,
+            password: tPassword,
+          ),
+        ).called(1);
+      },
+    );
+  });
 
   group('signOut', () {
     test('should complete successfully when operation succeeds', () async {
@@ -200,15 +327,13 @@ void main(){
     });
 
     test('should throw DataSourceException when datasource fails', () async {
-      when(() => mockRemoteDataSource.signOut())
-          .thenThrow(DataSourceException('test error'));
+      when(
+        () => mockRemoteDataSource.signOut(),
+      ).thenThrow(DataSourceException('test error'));
 
       final repository = providerContainer.read(authRepositoryProvider);
 
-      expectLater(
-        repository.signOut(),
-        throwsA(isA<DataSourceException>()),
-      );
+      expectLater(repository.signOut(), throwsA(isA<DataSourceException>()));
 
       verify(() => mockRemoteDataSource.signOut()).called(1);
     });
@@ -216,8 +341,9 @@ void main(){
 
   group('signInWithGoogle', () {
     test('should return an id when operation is successful', () async {
-      when(() => mockRemoteDataSource.signInWithGoogle())
-          .thenAnswer((_) async => tId);
+      when(
+        () => mockRemoteDataSource.signInWithGoogle(),
+      ).thenAnswer((_) async => tId);
 
       final repository = providerContainer.read(authRepositoryProvider);
 
@@ -227,74 +353,102 @@ void main(){
       verify(() => mockRemoteDataSource.signInWithGoogle()).called(1);
     });
 
-    test('should throw NetworkException when datasource fails due to network', () async {
-      when(() => mockRemoteDataSource.signInWithGoogle())
-          .thenThrow(NetworkException());
+    test(
+      'should throw NetworkException when datasource fails due to network',
+      () async {
+        when(
+          () => mockRemoteDataSource.signInWithGoogle(),
+        ).thenThrow(NetworkException());
 
-      final repository = providerContainer.read(authRepositoryProvider);
+        final repository = providerContainer.read(authRepositoryProvider);
 
-      expectLater(
-        repository.signInWithGoogle(),
-        throwsA(isA<NetworkException>()),
-      );
+        expectLater(
+          repository.signInWithGoogle(),
+          throwsA(isA<NetworkException>()),
+        );
 
-      verify(() => mockRemoteDataSource.signInWithGoogle()).called(1);
-    });
+        verify(() => mockRemoteDataSource.signInWithGoogle()).called(1);
+      },
+    );
 
-    test('should throw DataSourceException when datasource throws generic exception', () async {
-      when(() => mockRemoteDataSource.signInWithGoogle())
-          .thenThrow(DataSourceException('test error'));
+    test(
+      'should throw DataSourceException when datasource throws generic exception',
+      () async {
+        when(
+          () => mockRemoteDataSource.signInWithGoogle(),
+        ).thenThrow(DataSourceException('test error'));
 
-      final repository = providerContainer.read(authRepositoryProvider);
+        final repository = providerContainer.read(authRepositoryProvider);
 
-      expectLater(
-        repository.signInWithGoogle(),
-        throwsA(isA<DataSourceException>()),
-      );
+        expectLater(
+          repository.signInWithGoogle(),
+          throwsA(isA<DataSourceException>()),
+        );
 
-      verify(() => mockRemoteDataSource.signInWithGoogle()).called(1);
-    });
+        verify(() => mockRemoteDataSource.signInWithGoogle()).called(1);
+      },
+    );
   });
 
   group('sendResetPasswordEmail', () {
     test('should complete successfully when operation succeeds', () async {
-      when(() => mockRemoteDataSource.sendResetPasswordEmail(email: any(named: 'email')))
-          .thenAnswer((_) async => true);
+      when(
+        () => mockRemoteDataSource.sendResetPasswordEmail(
+          email: any(named: 'email'),
+        ),
+      ).thenAnswer((_) async => true);
 
       final repository = providerContainer.read(authRepositoryProvider);
 
       await repository.sendResetPasswordEmail(email: tEmail);
 
-      verify(() => mockRemoteDataSource.sendResetPasswordEmail(email: tEmail)).called(1);
+      verify(
+        () => mockRemoteDataSource.sendResetPasswordEmail(email: tEmail),
+      ).called(1);
     });
 
-    test('should throw NetworkException when datasource fails due to network', () async {
-      when(() => mockRemoteDataSource.sendResetPasswordEmail(email: any(named: 'email')))
-          .thenThrow(NetworkException());
+    test(
+      'should throw NetworkException when datasource fails due to network',
+      () async {
+        when(
+          () => mockRemoteDataSource.sendResetPasswordEmail(
+            email: any(named: 'email'),
+          ),
+        ).thenThrow(NetworkException());
 
-      final repository = providerContainer.read(authRepositoryProvider);
+        final repository = providerContainer.read(authRepositoryProvider);
 
-      expectLater(
-        repository.sendResetPasswordEmail(email: tEmail),
-        throwsA(isA<NetworkException>()),
-      );
+        expectLater(
+          repository.sendResetPasswordEmail(email: tEmail),
+          throwsA(isA<NetworkException>()),
+        );
 
-      verify(() => mockRemoteDataSource.sendResetPasswordEmail(email: tEmail)).called(1);
-    });
+        verify(
+          () => mockRemoteDataSource.sendResetPasswordEmail(email: tEmail),
+        ).called(1);
+      },
+    );
 
-    test('should throw DataSourceException when datasource throws generic exception', () async {
-      when(() => mockRemoteDataSource.sendResetPasswordEmail(email: any(named: 'email')))
-          .thenThrow(DataSourceException('test error'));
+    test(
+      'should throw DataSourceException when datasource throws generic exception',
+      () async {
+        when(
+          () => mockRemoteDataSource.sendResetPasswordEmail(
+            email: any(named: 'email'),
+          ),
+        ).thenThrow(DataSourceException('test error'));
 
-      final repository = providerContainer.read(authRepositoryProvider);
+        final repository = providerContainer.read(authRepositoryProvider);
 
-      expectLater(
-        repository.sendResetPasswordEmail(email: tEmail),
-        throwsA(isA<DataSourceException>()),
-      );
+        expectLater(
+          repository.sendResetPasswordEmail(email: tEmail),
+          throwsA(isA<DataSourceException>()),
+        );
 
-      verify(() => mockRemoteDataSource.sendResetPasswordEmail(email: tEmail)).called(1);
-    });
+        verify(
+          () => mockRemoteDataSource.sendResetPasswordEmail(email: tEmail),
+        ).called(1);
+      },
+    );
   });
-
 }
