@@ -10,6 +10,9 @@ import 'package:safeway/features/auth/domain/use_cases/sign_in_with_email_and_pa
 import 'package:safeway/features/auth/domain/use_cases/sign_in_with_google_use_case.dart';
 import 'package:safeway/features/auth/domain/use_cases/sign_out_use_case.dart';
 import 'package:safeway/features/auth/domain/use_cases/sign_up_with_email_and_password_use_case.dart';
+import 'package:safeway/features/auth/presentation/state/password_reset_state.dart';
+import 'package:safeway/features/auth/presentation/state/sign_in_state.dart';
+import 'package:safeway/features/auth/presentation/state/sign_up_state.dart';
 
 // Data
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance,);
@@ -23,3 +26,8 @@ final signUpWithEmailAndPasswordUseCaseProvider = Provider<SignUpWithEmailAndPas
 final signInWithGoogleUseCaseProvider = Provider<SignInWithGoogleUseCase>((ref) => SignInWithGoogleUseCase(repository: ref.watch(authRepositoryProvider)));
 final signOutUseCaseProvider = Provider<SignOutUseCase>((ref) => SignOutUseCase(repository: ref.watch(authRepositoryProvider)));
 final sendResetPasswordEmailUseCaseProvider = Provider<SendResetPasswordWithEmailUseCase>((ref) => SendResetPasswordWithEmailUseCase(repository: ref.watch(authRepositoryProvider)));
+
+// Presentation
+final signInStateNotifierProvider = NotifierProvider<SignInStateNotifier, SignInState>(() => SignInStateNotifier());
+final signUpNotifierProvider = NotifierProvider<SignUpStateNotifier, SignUpState>(() => SignUpStateNotifier(),);
+final passwordResetNotifierProvider = NotifierProvider<PasswordResetStateNotifier, PasswordResetState>(() => PasswordResetStateNotifier(),);
