@@ -19,7 +19,7 @@ class AppRouter {
         GoRoute(name: RouteNames.signIn, path: RoutePaths.signIn, builder: (context, state) => SignInScreen()),
         GoRoute(name: RouteNames.signUp, path: RoutePaths.signUp, builder: (context, state) => SignUpScreen()),
         GoRoute(name: RouteNames.resetPassword, path: RoutePaths.resetPassword, builder: (context, state) => PasswordResetScreen()),
-        GoRoute(name: RouteNames.test, path: RoutePaths.test, builder: (context, state) => TestPage(),),
+        GoRoute(name: RouteNames.home, path: RoutePaths.home, builder: (context, state) => TestPage(),),
       ]
   );
 }

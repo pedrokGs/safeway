@@ -5,61 +5,37 @@ import 'package:safeway/core/di/theme_providers.dart';
 class TestPage extends ConsumerWidget {
   const TestPage({super.key});
 
-@override
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
-  final themeMode = ref.watch(themeNotifierProvider);
-  final notifier = ref.read(themeNotifierProvider.notifier);
+    final themeMode = ref.watch(themeNotifierProvider);
+    final notifier = ref.read(themeNotifierProvider.notifier);
 
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text('Teste'),
-      actions: [
-        IconButton(
-          icon: Icon(themeMode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode),
-          onPressed: () => notifier.toggle(),
-        ),
-      ],
-    ),
-    body: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const ListTile(
-            title: Text('Bruh'),
-          ),
-          const SizedBox(height: 8),
-          Text('Modo atual: ${themeMode.toString().split('.').last}'),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              const Text('Escuro'),
-              Switch(
-                value: themeMode == ThemeMode.dark,
-                onChanged: (_) => notifier.toggle(),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () => notifier.setMode(ThemeMode.system),
-                child: const Text('Sistema'),
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Teste'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              themeMode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode,
+            ),
+            onPressed: () => notifier.toggle(),
           ),
         ],
       ),
-    ),
-    bottomNavigationBar: BottomNavigationBar(items: const [
-      BottomNavigationBarItem(
-        icon: Icon(Icons.train_sharp),
-        label: 'Train',
-        tooltip: 'I always come back',
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            tooltip: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map),
+            label: "Maps",
+            tooltip: "Maps",
+          ),
+        ],
       ),
-      BottomNavigationBarItem(
-        label: 'Lol Lmao',
-        tooltip: 'XD ez bro so ez',
-        icon: Icon(Icons.face_2_outlined),
-      ),
-    ]),
-  );
-}
+    );
+  }
 }

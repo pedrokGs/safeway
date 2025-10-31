@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:safeway/core/configs/route_paths.dart';
 import 'package:safeway/core/di/auth_providers.dart';
 
 import '../state/password_reset_state.dart';
@@ -36,10 +37,9 @@ class PasswordResetScreen extends ConsumerWidget {
                 const SizedBox(height: 16),
                 Text(
                   "Sucesso!",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall
-                      ?.copyWith(color: Colors.green),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineSmall?.copyWith(color: Colors.green),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -50,11 +50,13 @@ class PasswordResetScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                     foregroundColor: Theme.of(context).colorScheme.surface,
                   ),
                   onPressed: () {
-                    context.go('/signIn');
+                    context.go(RoutePaths.signIn);
                   },
                   child: Text("Fechar"),
                 ),
@@ -66,10 +68,10 @@ class PasswordResetScreen extends ConsumerWidget {
     }
 
     ref.listen<PasswordResetState>(passwordResetStateNotifierProvider, (
-        previous,
-        next,
-        ) {
-      if(next.success){
+      previous,
+      next,
+    ) {
+      if (next.success) {
         showResultModal();
       }
       if (next.errorMessage != null) {
@@ -78,7 +80,6 @@ class PasswordResetScreen extends ConsumerWidget {
         ).showSnackBar(SnackBar(content: Text(next.errorMessage!)));
       }
     });
-
 
     Future<void> sendEmail() async {
       if (formKey.currentState!.validate()) {
@@ -94,8 +95,11 @@ class PasswordResetScreen extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Redefinição de Senha', style: Theme.of(context).textTheme.titleSmall,),
-              const SizedBox(height: 48,),
+              Text(
+                'Redefinição de Senha',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: 48),
               CustomFormTextField(
                 controller: emailController,
                 isEnabled: !state.isLoading,
@@ -122,7 +126,10 @@ class PasswordResetScreen extends ConsumerWidget {
                     ? CircularProgressIndicator()
                     : Text("Enviar"),
               ),
-              TextButton(onPressed: () => context.go('/signIn'), child: Text("Voltar")),
+              TextButton(
+                onPressed: () => context.go(RoutePaths.signIn),
+                child: Text("Voltar"),
+              ),
             ],
           ),
         ),
