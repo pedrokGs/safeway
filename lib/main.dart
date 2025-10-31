@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:safeway/core/configs/app_router.dart';
 import 'package:safeway/core/configs/firebase_options_dev.dart';
+import 'package:safeway/core/di/theme_providers.dart';
 import 'package:safeway/core/theme/app_theme.dart';
 
 void main() async {
@@ -17,16 +18,18 @@ void main() async {
   );
 }
 
-class SafewayApp extends StatelessWidget {
+class SafewayApp extends ConsumerWidget {
   const SafewayApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeNotifierProvider);
 
+    return MaterialApp.router(
       theme: AppTheme.getTheme(false),
       darkTheme: AppTheme.getTheme(true),
-      routerConfig: AppRouter.router,
+      themeMode: themeMode,
+      routerConfig: appRouter,
     );
   }
 }
