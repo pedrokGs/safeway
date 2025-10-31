@@ -12,8 +12,8 @@ class PasswordResetScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(passwordResetNotifierProvider);
-    final notifier = ref.read(passwordResetNotifierProvider.notifier);
+    final state = ref.watch(passwordResetStateNotifierProvider);
+    final notifier = ref.read(passwordResetStateNotifierProvider.notifier);
 
     final formKey = GlobalKey<FormState>();
 
@@ -65,7 +65,7 @@ class PasswordResetScreen extends ConsumerWidget {
       );
     }
 
-    ref.listen<PasswordResetState>(passwordResetNotifierProvider, (
+    ref.listen<PasswordResetState>(passwordResetStateNotifierProvider, (
         previous,
         next,
         ) {

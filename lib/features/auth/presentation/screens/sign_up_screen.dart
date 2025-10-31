@@ -13,15 +13,15 @@ class SignUpScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(signUpNotifierProvider);
-    final notifier = ref.read(signUpNotifierProvider.notifier);
+    final state = ref.watch(signUpStateNotifierProvider);
+    final notifier = ref.read(signUpStateNotifierProvider.notifier);
 
     final formKey = GlobalKey<FormState>();
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
     final confirmaSenhaController = TextEditingController();
 
-    ref.listen<SignUpState>(signUpNotifierProvider, (previous, next) {
+    ref.listen<SignUpState>(signUpStateNotifierProvider, (previous, next) {
       if (next.success) {
         context.go('/home');
       }
@@ -104,8 +104,9 @@ class SignUpScreen extends ConsumerWidget {
                   if (value == null || value.trim().isEmpty) {
                     return 'Campo obrigatório';
                   }
-                  if (value.trim().length < 6) {
-                    return 'Senha muito curta';
+
+                  if(value != passwordController.text){
+                    return 'As senhas não coincidem';
                   }
                   return null;
                 },

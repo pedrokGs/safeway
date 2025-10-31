@@ -29,5 +29,5 @@ final sendResetPasswordEmailUseCaseProvider = Provider<SendResetPasswordWithEmai
 
 // Presentation
 final signInStateNotifierProvider = NotifierProvider<SignInStateNotifier, SignInState>(() => SignInStateNotifier());
-final signUpNotifierProvider = NotifierProvider<SignUpStateNotifier, SignUpState>(() => SignUpStateNotifier(),);
-final passwordResetNotifierProvider = NotifierProvider<PasswordResetStateNotifier, PasswordResetState>(() => PasswordResetStateNotifier(),);
+final signUpStateNotifierProvider = NotifierProvider<SignUpStateNotifier, SignUpState>(() => SignUpStateNotifier(),);
+final passwordResetStateNotifierProvider = NotifierProvider<PasswordResetStateNotifier, PasswordResetState>(() => PasswordResetStateNotifier(),);

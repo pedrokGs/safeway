@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:safeway/core/di/auth_providers.dart';
 import 'package:safeway/features/auth/domain/exceptions/google_sign_in_cancelled_exception.dart';
@@ -6,12 +7,15 @@ import 'package:safeway/features/auth/domain/exceptions/user_not_found_exception
 import 'package:safeway/features/auth/domain/use_cases/sign_in_with_email_and_password_use_case.dart';
 import 'package:safeway/features/auth/domain/use_cases/sign_in_with_google_use_case.dart';
 
-class SignInState{
+class SignInState extends Equatable{
   final String? errorMessage;
   final bool isLoading;
   final bool success;
 
-  SignInState({this.errorMessage, this.isLoading = false, this.success = false});
+  const SignInState({this.errorMessage, this.isLoading = false, this.success = false});
+
+  @override
+  List<Object?> get props => [errorMessage, isLoading, success];
 }
 
 class SignInStateNotifier extends Notifier<SignInState>{

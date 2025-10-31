@@ -1,18 +1,21 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:safeway/core/di/auth_providers.dart';
 import 'package:safeway/features/auth/domain/exceptions/email_already_in_use_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/google_sign_in_cancelled_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/invalid_credentials_exception.dart';
-import 'package:safeway/features/auth/domain/exceptions/user_not_found_exception.dart';
 import 'package:safeway/features/auth/domain/use_cases/sign_in_with_google_use_case.dart';
 import 'package:safeway/features/auth/domain/use_cases/sign_up_with_email_and_password_use_case.dart';
 
-class SignUpState{
+class SignUpState extends Equatable{
   final String? errorMessage;
   final bool isLoading;
   final bool success;
 
-  SignUpState({this.errorMessage, this.isLoading = false, this.success = false});
+  const SignUpState({this.errorMessage, this.isLoading = false, this.success = false});
+
+  @override
+  List<Object?> get props => [errorMessage, isLoading, success];
 }
 
 class SignUpStateNotifier extends Notifier<SignUpState>{
