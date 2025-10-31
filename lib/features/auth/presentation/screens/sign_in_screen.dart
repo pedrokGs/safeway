@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:safeway/core/configs/route_paths.dart';
 import 'package:safeway/core/di/auth_providers.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
@@ -23,7 +24,7 @@ class SignInScreen extends ConsumerWidget {
 
     ref.listen<SignInState>(signInStateNotifierProvider, (previous, next) {
       if (next.success) {
-        context.go('/home');
+        context.go(RoutePaths.home);
       }
       if (next.errorMessage != null) {
         ScaffoldMessenger.of(
@@ -96,11 +97,11 @@ class SignInScreen extends ConsumerWidget {
                     : Text("Entrar"),
               ),
               TextButton(
-                onPressed: () => context.go("/resetPassword"),
+                onPressed: () => context.go(RoutePaths.resetPassword),
                 child: Text("Esqueci minha senha"),
               ),
               TextButton(
-                onPressed: () => context.go("/signUp"),
+                onPressed: () => context.go(RoutePaths.signUp),
                 child: Text("Não possuo uma conta"),
               ),
 

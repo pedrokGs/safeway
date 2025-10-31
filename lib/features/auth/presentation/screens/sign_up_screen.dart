@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:safeway/core/configs/route_paths.dart';
 import 'package:safeway/core/di/auth_providers.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
@@ -23,19 +24,22 @@ class SignUpScreen extends ConsumerWidget {
 
     ref.listen<SignUpState>(signUpStateNotifierProvider, (previous, next) {
       if (next.success) {
-        context.go('/home');
+        context.go(RoutePaths.home);
       }
       if (next.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.errorMessage!)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(next.errorMessage!)));
       }
     });
 
     Future<void> signUp() async {
       if (formKey.currentState!.validate()) {
-        if(confirmaSenhaController.text.trim() != passwordController.text.trim()) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Campos tem que ser iguais")));
+        if (confirmaSenhaController.text.trim() !=
+            passwordController.text.trim()) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Campos tem que ser iguais")));
           return;
         }
         await notifier.signUp(
@@ -105,7 +109,7 @@ class SignUpScreen extends ConsumerWidget {
                     return 'Campo obrigatório';
                   }
 
-                  if(value != passwordController.text){
+                  if (value != passwordController.text) {
                     return 'As senhas não coincidem';
                   }
                   return null;
@@ -115,11 +119,13 @@ class SignUpScreen extends ConsumerWidget {
               const SizedBox(height: 48),
               SubmitFormButton(
                 onPressed: state.isLoading ? null : () async => await signUp(),
-                child: state.isLoading ? CircularProgressIndicator() : Text("Cadastrar"),
+                child: state.isLoading
+                    ? CircularProgressIndicator()
+                    : Text("Cadastrar"),
               ),
               const SizedBox(height: 24),
               TextButton(
-                onPressed: () => context.go("/signIn"),
+                onPressed: () => context.go(RoutePaths.signIn),
                 child: Text("Já tenho uma conta"),
               ),
 
