@@ -17,7 +17,6 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
       final value = prefs.getString(_kThemePref) ?? 'system';
       state = _fromString(value);
     } catch (_) {
-      // Se falhar ao carregar, mantém ThemeMode.system como padrão.
       state = ThemeMode.system;
     }
   }

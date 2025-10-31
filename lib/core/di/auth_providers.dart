@@ -1,60 +1,33 @@
-// TODO: Riverpod para injeção de dependências
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:safeway/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:safeway/features/auth/data/datasources/auth_remote_data_source_firebase.dart';
+import 'package:safeway/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:safeway/features/auth/domain/repositories/auth_repository.dart';
+import 'package:safeway/features/auth/domain/use_cases/send_reset_password_email_use_case.dart';
+import 'package:safeway/features/auth/domain/use_cases/sign_in_with_email_and_password_use_case.dart';
+import 'package:safeway/features/auth/domain/use_cases/sign_in_with_google_use_case.dart';
+import 'package:safeway/features/auth/domain/use_cases/sign_out_use_case.dart';
+import 'package:safeway/features/auth/domain/use_cases/sign_up_with_email_and_password_use_case.dart';
+import 'package:safeway/features/auth/presentation/state/password_reset_state.dart';
+import 'package:safeway/features/auth/presentation/state/sign_in_state.dart';
+import 'package:safeway/features/auth/presentation/state/sign_up_state.dart';
 
-// -------------------------------------------------------------------
-// PASSO 1: O PROVIDER DO FIREBASE (A DEPENDÊNCIA)
-// -------------------------------------------------------------------
-// Vamos criar um provider simples que apenas nos dá a instância do Firebase Auth.
-final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
-  return FirebaseAuth.instance;
-});
+// Data
+final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance,);
+final googleSignInProvider = Provider<GoogleSignIn>((ref) => GoogleSignIn.instance,);
+final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>((ref) => AuthRemoteDataSourceFirebase(googleSignIn: ref.watch(googleSignInProvider), firebaseAuth: ref.watch(firebaseAuthProvider)));
+final authRepositoryProvider = Provider<AuthRepository>((ref) => AuthRepositoryImpl(dataSource: ref.watch(authRemoteDataSourceProvider)),);
 
-// -------------------------------------------------------------------
-// PASSO 2: A LÓGICA DE AUTENTICAÇÃO (A COISA A TESTAR)
-// -------------------------------------------------------------------
+// Use Cases
+final signInWithEmailAndPasswordUseCaseProvider = Provider<SignInWithEmailAndPasswordUseCase>((ref) => SignInWithEmailAndPasswordUseCase(repository: ref.watch(authRepositoryProvider)),);
+final signUpWithEmailAndPasswordUseCaseProvider = Provider<SignUpWithEmailAndPasswordUseCase>((ref) => SignUpWithEmailAndPasswordUseCase(repository: ref.watch(authRepositoryProvider)));
+final signInWithGoogleUseCaseProvider = Provider<SignInWithGoogleUseCase>((ref) => SignInWithGoogleUseCase(repository: ref.watch(authRepositoryProvider)));
+final signOutUseCaseProvider = Provider<SignOutUseCase>((ref) => SignOutUseCase(repository: ref.watch(authRepositoryProvider)));
+final sendResetPasswordEmailUseCaseProvider = Provider<SendResetPasswordWithEmailUseCase>((ref) => SendResetPasswordWithEmailUseCase(repository: ref.watch(authRepositoryProvider)));
 
-// Esta é a "interface" do nosso repositório. Define o que ele DEVE fazer.
-abstract class AuthRepository {
-  Stream<User?> authStateChanges();
-  Future<void> signInWithEmail(String email, String password);
-  Future<void> signOut();
-}
-
-// Esta é a implementação "concreta" que usa o Firebase.
-class FirebaseAuthRepository implements AuthRepository {
-  // A classe pede pelo FirebaseAuth (nossa dependência)
-  final FirebaseAuth _firebaseAuth;
-
-  FirebaseAuthRepository(this._firebaseAuth);
-
-  @override
-  Stream<User?> authStateChanges() {
-    return _firebaseAuth.authStateChanges();
-  }
-
-  @override
-  Future<void> signInWithEmail(String email, String password) {
-    return _firebaseAuth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-  }
-
-  @override
-  Future<void> signOut() {
-    return _firebaseAuth.signOut();
-  }
-}
-
-// -------------------------------------------------------------------
-// PASSO 3: O PROVIDER DA LÓGICA (A INJEÇÃO DE DEPENDÊNCIA)
-// -------------------------------------------------------------------
-
-// Este é o provider que seu app vai usar.
-// Ele usa 'ref.watch' para pegar o provider do Firebase (Passo 1)
-// e o "injeta" no nosso FirebaseAuthRepository (Passo 2).
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  final firebaseAuth = ref.watch(firebaseAuthProvider);
-  return FirebaseAuthRepository(firebaseAuth);
-});
+// Presentation
+final signInStateNotifierProvider = NotifierProvider<SignInStateNotifier, SignInState>(() => SignInStateNotifier());
+final signUpStateNotifierProvider = NotifierProvider<SignUpStateNotifier, SignUpState>(() => SignUpStateNotifier(),);
+final passwordResetStateNotifierProvider = NotifierProvider<PasswordResetStateNotifier, PasswordResetState>(() => PasswordResetStateNotifier(),);
