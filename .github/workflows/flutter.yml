@@ -27,6 +27,9 @@ jobs:
         env:
           GOOGLE_SERVER_CLIENT_ID: ${{ secrets.GOOGLE_SERVER_CLIENT_ID }}
 
+      - name: Create temporary .env
+        run: |
+          echo "GOOGLE_SERVER_CLIENT_ID=${{ secrets.GOOGLE_SERVER_CLIENT_ID }}" > .env
 
       - name: Cache Flutter dependencies
         uses: actions/cache@v3
