@@ -25,6 +25,7 @@ migrate_working_dir/
 
 lib/core/configs/firebase_options_dev.dart
 android/app/src/google-services.json
+.env
 
 # Flutter/Dart/Pub related
 **/doc/api/
