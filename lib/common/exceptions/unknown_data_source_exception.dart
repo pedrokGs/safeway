@@ -1,4 +1,4 @@
-import 'package:safeway/features/auth/domain/exceptions/data_source_exception.dart';
+import 'data_source_exception.dart';
 
 class UnknownDataSourceException extends DataSourceException {
   final String error;

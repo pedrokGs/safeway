@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:safeway/core/di/auth_providers.dart';
-import 'package:safeway/features/auth/domain/exceptions/data_source_exception.dart';
+import 'package:safeway/common/exceptions/data_source_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/invalid_credentials_exception.dart';
 import 'package:safeway/features/auth/domain/repositories/auth_repository.dart';
 

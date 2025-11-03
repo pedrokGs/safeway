@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:safeway/core/di/auth_providers.dart';
 import 'package:safeway/features/auth/domain/exceptions/invalid_credentials_exception.dart';
-import 'package:safeway/features/auth/domain/exceptions/network_request_failed_exception.dart';
+import 'package:safeway/common/exceptions/network_request_failed_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/user_not_found_exception.dart';
 import 'package:safeway/features/auth/domain/use_cases/send_reset_password_email_use_case.dart';
 

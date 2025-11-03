@@ -11,6 +11,7 @@ class AlertEntity extends Equatable {
   final DateTime data;
   final double latitude;
   final double longitude;
+  final String userId;
 
   const AlertEntity({
     required this.uid,
@@ -21,6 +22,7 @@ class AlertEntity extends Equatable {
     required this.data,
     required this.latitude,
     required this.longitude,
+    required this.userId,
   });
 
   AlertEntity copyWith({
@@ -32,6 +34,7 @@ class AlertEntity extends Equatable {
     DateTime? data,
     double? latitude,
     double? longitude,
+    String? userId
   }) {
     return AlertEntity(
       uid: uid ?? this.uid,
@@ -42,6 +45,7 @@ class AlertEntity extends Equatable {
       data: data ?? this.data,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
+      userId: userId ?? this.userId
     );
   }
 
@@ -55,5 +59,6 @@ class AlertEntity extends Equatable {
     data,
     latitude,
     longitude,
+    userId
   ];
 }

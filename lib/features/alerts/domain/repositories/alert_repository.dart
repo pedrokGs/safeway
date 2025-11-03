@@ -5,9 +5,9 @@ import '../enums/alert_type.dart';
 
 abstract interface class AlertRepository{
   // Retorna todos os alertas em uma lista, ou [] caso não tenha nenhum, com outros metodos para filtragem
-  Future<List<AlertEntity>> getAllAlerts();
-  Future<List<AlertEntity>> getAlertsByType(AlertType type);
-  Future<List<AlertEntity>> getAlertsByRisk(AlertRisk risk);
+  Future<List<AlertEntity?>> getAllAlerts();
+  Future<List<AlertEntity?>> getAlertsByType(AlertType type);
+  Future<List<AlertEntity?>> getAlertsByRisk(AlertRisk risk);
 
   Future<void> deleteAlertById(String id);
 

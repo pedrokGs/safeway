@@ -5,9 +5,9 @@ import 'package:safeway/core/di/auth_providers.dart';
 import 'package:safeway/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:safeway/features/auth/data/models/auth_user_model.dart';
 import 'package:safeway/features/auth/domain/entities/auth_user_entity.dart';
-import 'package:safeway/features/auth/domain/exceptions/data_source_exception.dart';
+import 'package:safeway/common/exceptions/data_source_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/invalid_credentials_exception.dart';
-import 'package:safeway/features/auth/domain/exceptions/network_request_failed_exception.dart';
+import 'package:safeway/common/exceptions/network_request_failed_exception.dart';
 
 class MockRemoteDataSource extends Mock implements AuthRemoteDataSource {}
 

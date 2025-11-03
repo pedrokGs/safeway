@@ -15,6 +15,7 @@ AlertModel _$AlertModelFromJson(Map<String, dynamic> json) => AlertModel(
   data: DateTime.parse(json['data'] as String),
   latitude: (json['latitude'] as num).toDouble(),
   longitude: (json['longitude'] as num).toDouble(),
+  userId: json['userId'] as String,
 );
 
 Map<String, dynamic> _$AlertModelToJson(AlertModel instance) =>
@@ -27,6 +28,7 @@ Map<String, dynamic> _$AlertModelToJson(AlertModel instance) =>
       'data': instance.data.toIso8601String(),
       'latitude': instance.latitude,
       'longitude': instance.longitude,
+      'userId': instance.userId,
     };
 
 const _$AlertTypeEnumMap = {

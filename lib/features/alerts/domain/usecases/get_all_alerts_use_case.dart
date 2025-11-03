@@ -6,7 +6,7 @@ class GetAllAlertsUseCase{
 
   const GetAllAlertsUseCase({required this.repository});
 
-  Future<List<AlertEntity>> call() async {
-    throw UnimplementedError();
+  Future<List<AlertEntity?>> call() async {
+    return await repository.getAllAlerts();
   }
 }

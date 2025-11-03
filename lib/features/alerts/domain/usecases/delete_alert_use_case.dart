@@ -1,3 +1,4 @@
+import 'package:safeway/common/exceptions/invalid_argument_exception.dart';
 import 'package:safeway/features/alerts/domain/repositories/alert_repository.dart';
 
 class DeleteAlertUseCase{
@@ -6,6 +7,9 @@ class DeleteAlertUseCase{
   const DeleteAlertUseCase({required this.repository});
 
   Future<void> call(String id) async{
-    throw UnimplementedError();
+    if(id.isEmpty){
+      throw InvalidArgumentException();
+    }
+    await repository.deleteAlertById(id);
   }
 }

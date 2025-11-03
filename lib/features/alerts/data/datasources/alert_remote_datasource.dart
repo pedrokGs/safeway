@@ -3,9 +3,9 @@ import 'package:safeway/features/alerts/domain/enums/alert_risk.dart';
 import 'package:safeway/features/alerts/domain/enums/alert_type.dart';
 
 abstract interface class AlertRemoteDataSource {
-  Future<List<AlertModel>> getAllAlerts();
-  Future<List<AlertModel>> getAlertsByType(AlertType type);
-  Future<List<AlertModel>> getAlertsByRisk(AlertRisk risk);
+  Future<List<AlertModel?>> getAllAlerts();
+  Future<List<AlertModel?>> getAlertsByType(AlertType type);
+  Future<List<AlertModel?>> getAlertsByRisk(AlertRisk risk);
 
   Future<void> deleteAlertById(String id);
 
