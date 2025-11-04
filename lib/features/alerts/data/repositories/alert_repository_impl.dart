@@ -13,93 +13,43 @@ class AlertRepositoryImpl implements AlertRepository {
 
   const AlertRepositoryImpl({required this.datasource});
 
-  // TODO: Validação de erro melhor
-
   @override
   Future<AlertEntity> createAlert(AlertEntity alertEntity) async {
-    try {
-      final model = await datasource.createAlert(
-        AlertModel(
-          titulo: alertEntity.titulo,
-          descricao: alertEntity.descricao,
-          tipo: alertEntity.tipo,
-          risco: alertEntity.risco,
-          data: alertEntity.data,
-          latitude: alertEntity.latitude,
-          longitude: alertEntity.longitude,
-          userId: alertEntity.userId
-        ),
-      );
-      return model.toEntity();
-    } catch (e) {
-      log("Alert Repository: createAlert");
-      throw InvalidArgumentException();
-    }
+    final model = await datasource.createAlert(
+      AlertModel.fromEntity(alertEntity)
+    );
+    return model.toEntity();
   }
 
   @override
   Future<void> deleteAlertById(String id) async {
-    try {
-      await datasource.deleteAlertById(id);
-    } catch (e) {
-      log("Alert Repository: deleteAlertById");
-      throw InvalidArgumentException();
-    }
+    await datasource.deleteAlertById(id);
   }
 
   @override
-  Future<List<AlertEntity?>> getAlertsByRisk(AlertRisk risk) async {
-    try {
-      final result = await datasource.getAlertsByRisk(risk);
-      return result.whereType<AlertModel>().map((e) => e.toEntity()).toList();
-    } catch (e) {
-      log("Alert Repository: getAlertsByRisk");
-      throw InvalidArgumentException();
-    }
+  Future<List<AlertEntity>> getAlertsByRisk(AlertRisk risk) async {
+    final result = await datasource.getAlertsByRisk(risk);
+    return result.whereType<AlertModel>().map((e) => e.toEntity()).toList();
   }
 
   @override
-  Future<List<AlertEntity?>> getAlertsByType(AlertType type) async {
-    try {
-      final result = await datasource.getAlertsByType(type);
-      return result.whereType<AlertModel>().map((e) => e.toEntity()).toList();
-    } catch (e) {
-      log("Alert repository: getAlertsByType");
-      throw InvalidArgumentException();
-    }
+  Future<List<AlertEntity>> getAlertsByType(AlertType type) async {
+    final result = await datasource.getAlertsByType(type);
+    return result.whereType<AlertModel>().map((e) => e.toEntity()).toList();
   }
 
   @override
-  Future<List<AlertEntity?>> getAllAlerts() async {
-    try {
-      final result = await datasource.getAllAlerts();
-      return result.whereType<AlertModel>().map((e) => e.toEntity()).toList();
-    } catch (e) {
-      log("Alert repository: getAlertsByType");
-      throw InvalidArgumentException();
-    }
+  Future<List<AlertEntity>> getAllAlerts() async {
+    final result = await datasource.getAllAlerts();
+    return result.whereType<AlertModel>().map((e) => e.toEntity()).toList();
   }
 
   @override
   Future<AlertEntity> updateAlert(AlertEntity alertEntity) async {
-    try {
-      final result = await datasource.updateAlert(
-        AlertModel(
-          titulo: alertEntity.titulo,
-          descricao: alertEntity.descricao,
-          tipo: alertEntity.tipo,
-          risco: alertEntity.risco,
-          data: alertEntity.data,
-          latitude: alertEntity.latitude,
-          longitude: alertEntity.longitude,
-          userId: alertEntity.userId
-        ),
-      );
-      return result.toEntity();
-    } catch (e) {
-      log("Alert repository: updateAlert");
-      throw InvalidArgumentException();
-    }
+    final result = await datasource.updateAlert(
+        AlertModel.fromEntity(alertEntity)
+    );
+    return result.toEntity();
   }
 
   @override

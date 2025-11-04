@@ -11,6 +11,9 @@ import 'package:safeway/features/alerts/domain/usecases/get_all_alerts_by_risk_u
 import 'package:safeway/features/alerts/domain/usecases/get_all_alerts_by_type_use_case.dart';
 import 'package:safeway/features/alerts/domain/usecases/get_all_alerts_use_case.dart';
 import 'package:safeway/features/alerts/domain/usecases/update_alert_use_case.dart';
+import 'package:safeway/features/alerts/domain/usecases/watch_all_alerts_use_case.dart';
+
+import '../../features/alerts/presentation/state/map_page_state.dart';
 
 // Data
 final cloudFirestoreProvider = Provider<FirebaseFirestore>((ref) => FirebaseFirestore.instance,);
@@ -24,3 +27,12 @@ final getAllAlertsByRiskUseCaseProvider = Provider<GetAllAlertsByRiskUseCase>((r
 final getAllAlertsByTypeUseCaseProvider = Provider<GetAllAlertsByTypeUseCase>((ref) => GetAllAlertsByTypeUseCase(repository: ref.watch(alertRepositoryProvider)));
 final getAllAlertsUseCaseProvider = Provider<GetAllAlertsUseCase>((ref) => GetAllAlertsUseCase(repository: ref.watch(alertRepositoryProvider)));
 final updateAlertUseCaseProvider = Provider<UpdateAlertUseCase>((ref) => UpdateAlertUseCase(repository: ref.watch(alertRepositoryProvider)));
+final watchAllAlertsUseCaseProvider = Provider<WatchAllAlertsUseCase>((ref) => WatchAllAlertsUseCase(repository: ref.watch(alertRepositoryProvider)));
+
+// Presentation
+final alertMapNotifierProvider =
+StateNotifierProvider<AlertMapNotifier, MapPageState>((ref) {
+  final watchAll = ref.watch(watchAllAlertsUseCaseProvider);
+  final create = ref.watch(createAlertUseCaseProvider);
+  return AlertMapNotifier(watchAll, create);
+});

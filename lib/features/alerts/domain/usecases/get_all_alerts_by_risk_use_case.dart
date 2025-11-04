@@ -7,7 +7,7 @@ class GetAllAlertsByRiskUseCase{
 
   const GetAllAlertsByRiskUseCase({required this.repository});
 
-  Future<List<AlertEntity?>> call(AlertRisk risk) async {
+  Future<List<AlertEntity>> call(AlertRisk risk) async {
     return await repository.getAlertsByRisk(risk);
   }
 }

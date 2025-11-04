@@ -7,7 +7,7 @@ class GetAllAlertsByTypeUseCase{
 
   const GetAllAlertsByTypeUseCase({required this.repository});
 
-  Future<List<AlertEntity?>> call(AlertType type) async {
+  Future<List<AlertEntity>> call(AlertType type) async {
     return await repository.getAlertsByType(type);
   }
 }
