@@ -13,7 +13,8 @@ import 'package:safeway/features/alerts/domain/usecases/get_all_alerts_use_case.
 import 'package:safeway/features/alerts/domain/usecases/update_alert_use_case.dart';
 import 'package:safeway/features/alerts/domain/usecases/watch_all_alerts_use_case.dart';
 
-import '../../features/alerts/presentation/state/map_page_state.dart';
+import '../../features/alerts/presentation/state/alert_form_state.dart';
+import '../../features/alerts/presentation/state/alert_map_state.dart';
 
 // Data
 final cloudFirestoreProvider = Provider<FirebaseFirestore>((ref) => FirebaseFirestore.instance,);
@@ -36,3 +37,8 @@ StateNotifierProvider<AlertMapNotifier, MapPageState>((ref) {
   final create = ref.watch(createAlertUseCaseProvider);
   return AlertMapNotifier(watchAll, create);
 });
+
+final alertFormNotifierProvider =
+StateNotifierProvider<AlertFormNotifier, AlertFormState>(
+      (ref) => AlertFormNotifier(ref.watch(createAlertUseCaseProvider)),
+);

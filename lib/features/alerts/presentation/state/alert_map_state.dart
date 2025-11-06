@@ -1,15 +1,15 @@
+import 'dart:math';
+
 import 'package:equatable/equatable.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:safeway/features/alerts/domain/entities/alert_entity.dart';
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:safeway/features/alerts/domain/entities/alert_entity.dart';
 import 'package:safeway/features/alerts/domain/enums/alert_risk.dart';
 import 'package:safeway/features/alerts/domain/enums/alert_type.dart';
 import 'package:safeway/features/alerts/domain/usecases/create_alert_use_case.dart';
 import 'package:safeway/features/alerts/domain/usecases/watch_all_alerts_use_case.dart';
-import 'package:safeway/features/alerts/presentation/state/map_page_state.dart';
 
 class MapPageState extends Equatable {
   final List<AlertEntity> alerts;
@@ -103,25 +103,6 @@ class AlertMapNotifier extends StateNotifier<MapPageState> {
         currentPosition: LatLng(position.latitude, position.longitude),
       );
     });
-  }
-
-  Future<void> createFakeAlert() async {
-    try {
-      final alert = AlertEntity(
-        uid: '',
-        titulo: 'Alerta de Teste',
-        descricao: 'Criado manualmente pelo botão',
-        tipo: AlertType.incendio,
-        risco: AlertRisk.medio,
-        data: DateTime.now(),
-        latitude: -23.5505,
-        longitude: -46.6333,
-        userId: 'demo',
-      );
-      await _createAlertUseCase(alert);
-    } catch (e) {
-      state = state.copyWith(error: e.toString());
-    }
   }
 
   @override
