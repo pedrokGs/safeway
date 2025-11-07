@@ -33,6 +33,7 @@ class SafewayApp extends ConsumerWidget {
     final themeMode = ref.watch(themeNotifierProvider);
 
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       theme: AppTheme.getTheme(false),
       darkTheme: AppTheme.getTheme(true),
       themeMode: themeMode,

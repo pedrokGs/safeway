@@ -1,27 +1,32 @@
 import 'dart:math';
 
 import 'package:equatable/equatable.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:safeway/features/alerts/domain/entities/alert_entity.dart';
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:safeway/features/alerts/domain/enums/alert_risk.dart';
-import 'package:safeway/features/alerts/domain/enums/alert_type.dart';
 import 'package:safeway/features/alerts/domain/usecases/create_alert_use_case.dart';
 import 'package:safeway/features/alerts/domain/usecases/watch_all_alerts_use_case.dart';
+
+import '../utils/speed_time_calculator.dart';
 
 class MapPageState extends Equatable {
   final List<AlertEntity> alerts;
   final bool isLoading;
   final String? error;
   final LatLng? currentPosition;
+  final double? etaSeconds;
+  final TransportMode selectedMode;
 
   const MapPageState({
     this.alerts = const [],
     this.isLoading = false,
     this.error,
     this.currentPosition,
+    this.etaSeconds,
+    this.selectedMode = TransportMode.car,
   });
 
   MapPageState copyWith({
@@ -29,18 +34,24 @@ class MapPageState extends Equatable {
     bool? isLoading,
     String? error,
     LatLng? currentPosition,
+    double? etaSeconds,
+    TransportMode? selectedMode,
   }) {
     return MapPageState(
       alerts: alerts ?? this.alerts,
       isLoading: isLoading ?? this.isLoading,
       error: error,
       currentPosition: currentPosition ?? this.currentPosition,
+      etaSeconds: etaSeconds ?? this.etaSeconds,
+      selectedMode: selectedMode ?? this.selectedMode,
     );
   }
 
   @override
-  List<Object?> get props => [alerts, isLoading, error, currentPosition];
+  List<Object?> get props =>
+      [alerts, isLoading, error, currentPosition, etaSeconds, selectedMode];
 }
+
 
 class AlertMapNotifier extends StateNotifier<MapPageState> {
   final WatchAllAlertsUseCase _watchAllAlertsUseCase;
@@ -63,6 +74,45 @@ class AlertMapNotifier extends StateNotifier<MapPageState> {
         state = state.copyWith(error: e.toString(), isLoading: false);
       },
     );
+  }
+
+  void calculateEta(List<LatLng> routePoints, {double trafficMultiplier = 1.0}) {
+    if (routePoints.isEmpty) return;
+
+    final eta = estimateEtaInSeconds(
+      routePoints: routePoints,
+      transportMode: state.selectedMode,
+      trafficMultiplier: trafficMultiplier,
+    );
+
+    state = state.copyWith(etaSeconds: eta);
+  }
+
+  void changeMode(TransportMode newMode, {List<LatLng>? currentRoute}) {
+    state = state.copyWith(selectedMode: newMode);
+
+    if (currentRoute != null && currentRoute.isNotEmpty) {
+      calculateEta(currentRoute);
+    }
+  }
+
+  String? get formattedEta {
+    final eta = state.etaSeconds;
+    if (eta == null) return null;
+    return formatDurationFromSeconds(eta);
+  }
+
+  Future<LatLng?> getCoordinatesFromAddress(String address) async {
+    try {
+      List<Location> locations = await locationFromAddress(address);
+      if (locations.isNotEmpty) {
+        final location = locations.first;
+        return LatLng(location.latitude, location.longitude);
+      }
+    } catch (e) {
+      print('Erro ao buscar coordenadas: $e');
+    }
+    return null;
   }
 
   Future<void> getCurrentPosition() async {
