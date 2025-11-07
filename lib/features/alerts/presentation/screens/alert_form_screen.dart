@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:safeway/core/di/alert_providers.dart';
 import 'package:safeway/features/alerts/domain/entities/alert_entity.dart';
 import 'package:safeway/features/alerts/domain/enums/alert_risk.dart';
 import 'package:safeway/features/alerts/domain/enums/alert_type.dart';
-import 'package:safeway/features/alerts/presentation/screens/alert_map_screen.dart';
 
 class AlertFormScreen extends ConsumerStatefulWidget {
   final LatLng latLng;
@@ -54,10 +53,7 @@ class _AlertFormScreenState extends ConsumerState<AlertFormScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Alerta criado com sucesso!')),
         );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => AlertMapScreen()),
-        );
+        context.goNamed('home');
       }
     }
   }
@@ -67,8 +63,13 @@ class _AlertFormScreenState extends ConsumerState<AlertFormScreen> {
     final formState = ref.watch(alertFormNotifierProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text('Novo Alerta', style: Theme.of(context).textTheme.headlineSmall
-        ,)),
+      appBar: AppBar(
+        title: Text(
+          'Novo Alerta',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        leading: BackButton(onPressed: () => context.goNamed('home'),),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -108,7 +109,7 @@ class _AlertFormScreenState extends ConsumerState<AlertFormScreen> {
 
               // --- TIPO ---
               DropdownButtonFormField<AlertType>(
-                value: _tipo,
+                initialValue: _tipo,
                 style: Theme.of(context).textTheme.bodyLarge,
                 decoration: InputDecoration(
                   labelText: 'Tipo de Alerta',
@@ -131,7 +132,7 @@ class _AlertFormScreenState extends ConsumerState<AlertFormScreen> {
 
               // --- RISCO ---
               DropdownButtonFormField<AlertRisk>(
-                value: _risco,
+                initialValue: _risco,
                 style: Theme.of(context).textTheme.bodyLarge,
                 decoration: InputDecoration(
                   labelText: 'Nível de Risco',

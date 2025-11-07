@@ -6,7 +6,6 @@ import 'package:safeway/core/di/auth_providers.dart';
 import 'package:safeway/features/auth/domain/exceptions/email_already_in_use_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/google_sign_in_cancelled_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/invalid_credentials_exception.dart';
-import 'package:safeway/features/auth/domain/exceptions/user_not_found_exception.dart';
 import 'package:safeway/features/auth/domain/use_cases/sign_in_with_google_use_case.dart';
 import 'package:safeway/features/auth/domain/use_cases/sign_up_with_email_and_password_use_case.dart';
 import 'package:safeway/features/auth/presentation/state/sign_up_state.dart';

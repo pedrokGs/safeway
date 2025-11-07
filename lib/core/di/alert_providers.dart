@@ -15,6 +15,7 @@ import 'package:safeway/features/alerts/domain/usecases/watch_all_alerts_use_cas
 
 import '../../features/alerts/presentation/state/alert_form_state.dart';
 import '../../features/alerts/presentation/state/alert_map_state.dart';
+import '../../features/alerts/presentation/state/location_search_state.dart';
 
 // Data
 final cloudFirestoreProvider = Provider<FirebaseFirestore>((ref) => FirebaseFirestore.instance,);
@@ -42,3 +43,8 @@ final alertFormNotifierProvider =
 StateNotifierProvider<AlertFormNotifier, AlertFormState>(
       (ref) => AlertFormNotifier(ref.watch(createAlertUseCaseProvider)),
 );
+
+final locationSearchProvider =
+StateNotifierProvider<LocationSearchNotifier, LocationSearchState>((ref) {
+  return LocationSearchNotifier();
+});

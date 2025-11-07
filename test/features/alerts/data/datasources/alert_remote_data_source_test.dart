@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:safeway/common/exceptions/data_source_exception.dart';
 import 'package:safeway/common/exceptions/unauthorized_exception.dart';
 import 'package:safeway/common/exceptions/unknown_data_source_exception.dart';
 import 'package:safeway/core/di/alert_providers.dart';
@@ -72,7 +71,7 @@ void main() {
       userId: '123'
   );
 
-  Map<String, dynamic> _mapFromAlert(AlertModel a) {
+  Map<String, dynamic> mapFromAlert(AlertModel a) {
     return {
       'titulo': a.titulo,
       'descricao': a.descricao,
@@ -131,8 +130,8 @@ void main() {
       final mockDocSnap1 = MockQueryDocumentSnapshot();
       final mockDocSnap2 = MockQueryDocumentSnapshot();
 
-      final map1 = _mapFromAlert(tAlerta);
-      final map2 = _mapFromAlert(tAlerta2);
+      final map1 = mapFromAlert(tAlerta);
+      final map2 = mapFromAlert(tAlerta2);
 
       when(() => firestore.collection('alerts')).thenReturn(mockCollection);
       when(() => mockCollection.orderBy('data', descending: true)).thenReturn(mockQuery);
@@ -185,7 +184,7 @@ void main() {
       final mockQuerySnapshot = MockQuerySnapshot();
       final mockDocSnap1 = MockQueryDocumentSnapshot();
 
-      final map1 = _mapFromAlert(tAlerta);
+      final map1 = mapFromAlert(tAlerta);
 
       when(() => firestore.collection('alerts')).thenReturn(mockCollection);
       when(() => mockCollection.where('tipo', isEqualTo: tAlerta.tipo.name)).thenReturn(mockQuery);
@@ -237,7 +236,7 @@ void main() {
       final mockQuerySnapshot = MockQuerySnapshot();
       final mockDocSnap1 = MockQueryDocumentSnapshot();
 
-      final map1 = _mapFromAlert(tAlerta);
+      final map1 = mapFromAlert(tAlerta);
 
       when(() => firestore.collection('alerts')).thenReturn(mockCollection);
       when(() => mockCollection.where('risco', isEqualTo: tAlerta.risco.name)).thenReturn(mockQuery);
@@ -319,7 +318,7 @@ void main() {
     test('deve atualizar o documento e retornar o modelo atualizado', () async {
       final updated = tAlerta.copyWith(titulo: 'Alerta de Incêndio - Atualizado');
 
-      final updatedMap = _mapFromAlert(updated);
+      final updatedMap = mapFromAlert(updated);
 
       when(() => firestore.collection('alerts')).thenReturn(mockCollection);
       when(() => mockCollection.doc(updated.uid)).thenReturn(mockDocRef);
@@ -363,7 +362,7 @@ void main() {
     test('deve emitir lista de alertas quando o snapshot mudar', () async {
       final mockQuerySnapshot = MockQuerySnapshot();
       final mockDocSnap1 = MockQueryDocumentSnapshot();
-      final map1 = _mapFromAlert(tAlerta);
+      final map1 = mapFromAlert(tAlerta);
 
       when(() => firestore.collection('alerts')).thenReturn(mockCollection);
       when(() => mockCollection.snapshots()).thenAnswer((_) => Stream.value(mockQuerySnapshot));

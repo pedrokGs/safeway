@@ -102,7 +102,7 @@ void main(){
       final repository = container.read(alertRepositoryProvider);
       final results = await repository.getAlertsByType(AlertType.incendio);
 
-      expect(results.every((element) => element?.tipo == AlertType.incendio,), true);
+      expect(results.every((element) => element.tipo == AlertType.incendio,), true);
       verify(() => dataSource.getAlertsByType(AlertType.incendio)).called(1);
     },);
     
@@ -142,7 +142,7 @@ void main(){
       final repository = container.read(alertRepositoryProvider);
       final results = await repository.getAlertsByRisk(AlertRisk.alto);
 
-      expect(results.every((element) => element?.risco == AlertRisk.alto,), true);
+      expect(results.every((element) => element.risco == AlertRisk.alto,), true);
       verify(() => dataSource.getAlertsByRisk(AlertRisk.alto)).called(1);
     },);
 

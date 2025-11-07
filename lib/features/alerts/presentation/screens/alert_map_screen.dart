@@ -6,16 +6,13 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:safeway/core/di/theme_providers.dart';
 import 'package:safeway/features/alerts/presentation/utils/convert_risk_to_color.dart';
-import 'package:safeway/features/alerts/domain/enums/alert_risk.dart';
-import 'package:safeway/features/alerts/presentation/screens/alert_form_screen.dart';
-import 'package:safeway/features/alerts/presentation/state/alert_map_state.dart';
 import 'package:safeway/features/alerts/presentation/utils/get_route_points.dart';
 import 'package:safeway/features/alerts/presentation/utils/speed_time_calculator.dart';
 import 'package:safeway/features/alerts/presentation/widgets/alert_info_container.dart';
+import 'package:safeway/features/alerts/presentation/widgets/custom_drawer.dart';
 import 'package:safeway/features/alerts/presentation/widgets/custom_text_field.dart';
 
 import '../../../../core/di/alert_providers.dart';
-import '../utils/nomination_autocomplete.dart';
 
 class AlertMapScreen extends ConsumerStatefulWidget {
   const AlertMapScreen({super.key});
@@ -28,8 +25,6 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
   final MapController _mapController = MapController();
   List<LatLng> _routePoints = [];
   final _locationController = TextEditingController();
-  List<String> _suggestions = [];
-  bool _isLoadingSuggestions = false;
 
   @override
   void initState() {
@@ -73,36 +68,22 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
     }
   }
 
-  Future<void> _updateSuggestions(String value) async {
-    if (value.length < 3) {
-      setState(() => _suggestions = []);
-      return;
-    }
-
-    setState(() => _isLoadingSuggestions = true);
-
-    final results = await getAddressSuggestions(value);
-
-    setState(() {
-      _suggestions = results;
-      _isLoadingSuggestions = false;
-    });
-  }
   Widget _buildModeButton(
-      BuildContext context, {
-        required IconData icon,
-        required String label,
-        required bool selected,
-        required VoidCallback onTap,
-      }) {
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        width: MediaQuery.of(context).size.width * 0.25,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
-          color: selected ? colorScheme.primary : colorScheme.surfaceVariant,
+          color: selected ? colorScheme.primary : colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             if (selected)
@@ -131,11 +112,14 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeMode = ref.watch(themeNotifierProvider);
-    final themeNotifier = ref.read(themeNotifierProvider.notifier);
-
     final state = ref.watch(alertMapNotifierProvider);
     final notifier = ref.read(alertMapNotifierProvider.notifier);
+
+    final searchState = ref.watch(locationSearchProvider);
+    final searchNotifier = ref.read(locationSearchProvider.notifier);
+
+    final themeMode = ref.watch(themeNotifierProvider);
+    final themeNotifier = ref.read(themeNotifierProvider.notifier);
 
     final cityBounds = LatLngBounds(
       LatLng(-22.572959, -47.477806),
@@ -143,39 +127,24 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
     );
 
     return Scaffold(
+      drawer: CustomDrawer(),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
-        leading: IconButton(
-          onPressed: () async {
-            await themeNotifier.toggle();
-          },
-          icon: themeMode == ThemeMode.dark
-              ? Icon(Icons.dark_mode)
-              : Icon(Icons.light_mode),
+        leading: Builder(
+          builder: (context) => IconButton(
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            icon: Icon(Icons.menu),
+          ),
         ),
         actions: [
-          SizedBox(
-            height: 48,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AlertFormScreen(latLng: state.currentPosition!),
-                  ),
-                );
-              },
-              icon: Icon(Icons.crisis_alert),
-              label: Text('Alertar Autoridades'),
-            ),
+          IconButton(
+            onPressed: () async {
+              await themeNotifier.toggle();
+            },
+            icon: themeMode == ThemeMode.dark
+                ? Icon(Icons.dark_mode)
+                : Icon(Icons.light_mode),
           ),
         ],
       ),
@@ -311,7 +280,7 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
                               height: 40,
                               child: const Icon(
                                 Icons.my_location,
-                                color: Colors.amber,
+                                color: Colors.lightGreen,
                                 size: 28,
                               ),
                             ),
@@ -384,10 +353,11 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
                           CustomTextField(
                             controller: _locationController,
                             icon: const Icon(Icons.location_pin),
-                            onChanged: _updateSuggestions,
+                            onChanged: searchNotifier.updateSuggestions,
                           ),
-                          const SizedBox(height:  8,),
-                          if (_routePoints.isNotEmpty && state.etaSeconds != null)
+                          const SizedBox(height: 8),
+                          if (_routePoints.isNotEmpty &&
+                              state.etaSeconds != null)
                             Padding(
                               padding: const EdgeInsets.only(top: 12),
                               child: Text(
@@ -395,51 +365,64 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
                                 style: Theme.of(context).textTheme.bodyLarge,
                               ),
                             ),
-                          const SizedBox(height: 8,),
+                          const SizedBox(height: 8),
                           Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                _buildModeButton(
-                                  context,
-                                  icon: Icons.directions_car,
-                                  label: 'Carro',
-                                  selected: state.selectedMode == TransportMode.car,
-                                  onTap: () {
-                                    notifier.changeMode(TransportMode.car, currentRoute: _routePoints);
-                                  },
-                                ),
-                                _buildModeButton(
-                                  context,
-                                  icon: Icons.pedal_bike,
-                                  label: 'Bicicleta',
-                                  selected: state.selectedMode == TransportMode.bike,
-                                  onTap: () {
-                                    notifier.changeMode(TransportMode.bike, currentRoute: _routePoints);
-                                  },
-                                ),
-                                _buildModeButton(
-                                  context,
-                                  icon: Icons.directions_walk,
-                                  label: 'Caminhar',
-                                  selected: state.selectedMode == TransportMode.walking,
-                                  onTap: () {
-                                    notifier.changeMode(TransportMode.walking, currentRoute: _routePoints);
-                                  },
-                                ),
-                              ],),
-                          if (_isLoadingSuggestions)
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildModeButton(
+                                context,
+                                icon: Icons.directions_car,
+                                label: 'Carro',
+                                selected:
+                                    state.selectedMode == TransportMode.car,
+                                onTap: () {
+                                  notifier.changeMode(
+                                    TransportMode.car,
+                                    currentRoute: _routePoints,
+                                  );
+                                },
+                              ),
+                              _buildModeButton(
+                                context,
+                                icon: Icons.pedal_bike,
+                                label: 'Bicicleta',
+                                selected:
+                                    state.selectedMode == TransportMode.bike,
+                                onTap: () {
+                                  notifier.changeMode(
+                                    TransportMode.bike,
+                                    currentRoute: _routePoints,
+                                  );
+                                },
+                              ),
+                              _buildModeButton(
+                                context,
+                                icon: Icons.directions_walk,
+                                label: 'Caminhar',
+                                selected:
+                                    state.selectedMode == TransportMode.walking,
+                                onTap: () {
+                                  notifier.changeMode(
+                                    TransportMode.walking,
+                                    currentRoute: _routePoints,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          if (searchState.isLoading)
                             const Padding(
                               padding: EdgeInsets.only(top: 32),
                               child: LinearProgressIndicator(),
                             ),
-                          if (_suggestions.isNotEmpty)
+                          if (searchState.suggestions.isNotEmpty)
                             Container(
                               constraints: const BoxConstraints(maxHeight: 220),
                               margin: const EdgeInsets.only(top: 8),
                               decoration: BoxDecoration(
                                 color: Theme.of(
                                   context,
-                                ).colorScheme.surfaceVariant,
+                                ).colorScheme.surfaceContainerHighest,
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(
@@ -451,36 +434,54 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
                               child: ListView.builder(
                                 padding: const EdgeInsets.all(8.0),
                                 shrinkWrap: true,
-                                itemCount: _suggestions.length,
+                                itemCount: searchState.suggestions.length,
                                 itemBuilder: (context, index) {
-                                  final suggestion = _suggestions[index];
+                                  final suggestion =
+                                      searchState.suggestions[index];
                                   return Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 4.0,
+                                    ),
                                     child: Material(
-                                      color: Theme.of(context).colorScheme.surface,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.surface,
                                       elevation: 1,
                                       borderRadius: BorderRadius.circular(12),
                                       child: InkWell(
                                         borderRadius: BorderRadius.circular(12),
                                         onTap: () async {
                                           _locationController.text = suggestion;
-                                          setState(() => _suggestions = []);
+                                          searchNotifier.clear();
                                           await _createRoute();
                                         },
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 12,
+                                          ),
                                           child: Row(
                                             children: [
-                                              const Icon(Icons.location_on_outlined, size: 20, color: Colors.grey),
+                                              const Icon(
+                                                Icons.location_on_outlined,
+                                                size: 20,
+                                                color: Colors.grey,
+                                              ),
                                               const SizedBox(width: 12),
                                               Expanded(
                                                 child: Text(
                                                   suggestion,
-                                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                                    color: Theme.of(context).colorScheme.onSurface,
-                                                  ),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge
+                                                      ?.copyWith(
+                                                        color: Theme.of(
+                                                          context,
+                                                        ).colorScheme.onSurface,
+                                                      ),
                                                   maxLines: 2,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ],
@@ -499,13 +500,25 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
                 ),
               ],
             ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: Icon(Icons.location_searching, color: Colors.amber,),
-        onPressed: () {
-          final currentPos = state.currentPosition!;
-            _mapController.move(currentPos, 15);
-        },
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            child: Icon(Icons.location_searching, color: Colors.amber),
+            onPressed: () {
+              final currentPos = state.currentPosition!;
+              _mapController.move(currentPos, 20);
+            },
+          ),
+          SizedBox(height: 12),
+          FloatingActionButton(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            child: Icon(Icons.warning_amber, color: Colors.amber),
+            onPressed: () =>
+                context.goNamed('alertForm', extra: state.currentPosition),
+          ),
+        ],
       ),
     );
   }
