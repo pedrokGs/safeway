@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:safeway/core/di/theme_providers.dart';
-import 'package:safeway/features/alerts/presentation/widgets/custom_drawer.dart';
+import 'package:safeway/common/widgets/custom_drawer.dart';
 
 class AlarmHistoryScreen extends ConsumerStatefulWidget {
   const AlarmHistoryScreen({super.key});

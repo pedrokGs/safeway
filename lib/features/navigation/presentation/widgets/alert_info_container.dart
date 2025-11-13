@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
-import 'package:safeway/features/alerts/presentation/utils/convert_risk_to_color.dart';
+import 'package:safeway/features/navigation/presentation/utils/convert_risk_to_color.dart';
 import 'package:safeway/features/alerts/domain/entities/alert_entity.dart';
 
 class AlertInfoContainer extends StatelessWidget {

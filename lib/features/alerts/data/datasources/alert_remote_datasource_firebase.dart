@@ -140,7 +140,6 @@ class AlertRemoteDataSourceFirebase implements AlertRemoteDataSource {
     }
   }
 
-
   @override
   Future<AlertModel> updateAlert(AlertModel model) async {
     try {
@@ -167,4 +166,6 @@ class AlertRemoteDataSourceFirebase implements AlertRemoteDataSource {
       throw UnknownDataSourceException();
     }
   }
+
+
 }

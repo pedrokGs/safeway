@@ -9,7 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:safeway/features/alerts/domain/usecases/create_alert_use_case.dart';
 import 'package:safeway/features/alerts/domain/usecases/watch_all_alerts_use_case.dart';
 
-import '../utils/speed_time_calculator.dart';
+import '../../../navigation/presentation/utils/speed_time_calculator.dart';
 
 class MapPageState extends Equatable {
   final List<AlertEntity> alerts;

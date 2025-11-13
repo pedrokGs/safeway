@@ -5,11 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:safeway/core/di/theme_providers.dart';
-import 'package:safeway/features/alerts/presentation/utils/convert_risk_to_color.dart';
-import 'package:safeway/features/alerts/presentation/utils/get_route_points.dart';
-import 'package:safeway/features/alerts/presentation/utils/speed_time_calculator.dart';
-import 'package:safeway/features/alerts/presentation/widgets/alert_info_container.dart';
-import 'package:safeway/features/alerts/presentation/widgets/custom_drawer.dart';
+import 'package:safeway/features/navigation/presentation/utils/convert_risk_to_color.dart';
+import 'package:safeway/features/navigation/presentation/utils/get_route_points.dart';
+import 'package:safeway/features/navigation/presentation/utils/speed_time_calculator.dart';
+import 'package:safeway/features/navigation/presentation/widgets/alert_info_container.dart';
+import 'package:safeway/common/widgets/custom_drawer.dart';
 import 'package:safeway/features/alerts/presentation/widgets/custom_text_field.dart';
 
 import '../../../../core/di/alert_providers.dart';
@@ -24,6 +24,7 @@ class AlertMapScreen extends ConsumerStatefulWidget {
 class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
   final MapController _mapController = MapController();
   List<LatLng> _routePoints = [];
+  bool calculatingRoute = false;
   final _locationController = TextEditingController();
 
   @override
@@ -34,6 +35,9 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
   }
 
   Future<void> _createRoute() async {
+    setState(() {
+      calculatingRoute = true;
+    });
     final currentPos = ref.read(alertMapNotifierProvider).currentPosition;
     final destinationText = _locationController.text.trim();
 
@@ -65,6 +69,8 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Erro ao gerar rota: $e')));
+    } finally {
+      calculatingRoute = false;
     }
   }
 
@@ -83,7 +89,9 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
         width: MediaQuery.of(context).size.width * 0.25,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
-          color: selected ? colorScheme.primary : colorScheme.surfaceContainerHighest,
+          color: selected
+              ? colorScheme.primary
+              : colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             if (selected)
@@ -498,6 +506,9 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
                     );
                   },
                 ),
+                calculatingRoute
+                    ? Center(child: CircularProgressIndicator())
+                    : Container(),
               ],
             ),
       floatingActionButton: Column(
