@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:safeway/features/navigation/presentation/utils/nomination_autocomplete.dart';
+
+import '../../views/utils/nomination_autocomplete.dart';
 
 class LocationSearchState {
   final List<String> suggestions;

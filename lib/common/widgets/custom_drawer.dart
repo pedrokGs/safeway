@@ -21,9 +21,14 @@ class CustomDrawer extends ConsumerWidget {
         route: RouteNames.home,
       ),
       _DrawerItem(
+        label: 'Alertas',
+        icon: Icons.crisis_alert_sharp,
+        route: RouteNames.alertHistory,
+      ),
+      _DrawerItem(
         label: 'Histórico',
         icon: Icons.history,
-        route: RouteNames.alarmHistoryScreen,
+        route: RouteNames.navigationHistory,
       ),
     ];
 

@@ -1,6 +1,7 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:hive/hive.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:safeway/features/alerts/domain/entities/alert_entity.dart';
 import 'dart:async';
@@ -8,8 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:safeway/features/alerts/domain/usecases/create_alert_use_case.dart';
 import 'package:safeway/features/alerts/domain/usecases/watch_all_alerts_use_case.dart';
+import 'package:safeway/features/navigation/models/route_history_model.dart';
 
-import '../../../navigation/presentation/utils/speed_time_calculator.dart';
+import '../../views/utils/speed_time_calculator.dart';
+
 
 class MapPageState extends Equatable {
   final List<AlertEntity> alerts;
@@ -153,6 +156,22 @@ class AlertMapNotifier extends StateNotifier<MapPageState> {
       );
     });
   }
+
+  Future<void> salvarRota(List<LatLng> routePoints, double etaSeconds, String mode, String origem, String destino) async {
+    final box = Hive.box<RouteHistoryModel>('route_history');
+
+    final route = RouteHistoryModel(
+      routePoints: routePoints,
+      etaSeconds: etaSeconds,
+      transportMode: mode,
+      createdAt: DateTime.now(),
+      origem: origem,
+      destino: destino
+    );
+
+    await box.add(route);
+  }
+
 
   @override
   void dispose() {

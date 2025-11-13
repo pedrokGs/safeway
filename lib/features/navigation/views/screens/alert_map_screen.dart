@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:safeway/core/di/theme_providers.dart';
-import 'package:safeway/features/navigation/presentation/utils/convert_risk_to_color.dart';
-import 'package:safeway/features/navigation/presentation/utils/get_route_points.dart';
-import 'package:safeway/features/navigation/presentation/utils/speed_time_calculator.dart';
-import 'package:safeway/features/navigation/presentation/widgets/alert_info_container.dart';
 import 'package:safeway/common/widgets/custom_drawer.dart';
 import 'package:safeway/features/alerts/presentation/widgets/custom_text_field.dart';
 
 import '../../../../core/di/alert_providers.dart';
+import '../utils/convert_risk_to_color.dart';
+import '../utils/get_route_points.dart';
+import '../utils/speed_time_calculator.dart';
+import '../widgets/alert_info_container.dart';
 
 class AlertMapScreen extends ConsumerStatefulWidget {
   const AlertMapScreen({super.key});
@@ -65,6 +66,14 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
       _mapController.fitCamera(
         CameraFit.bounds(bounds: LatLngBounds.fromPoints([...route])),
       );
+
+      final etaSeconds = ref.read(alertMapNotifierProvider).etaSeconds ?? 0;
+      final mode = ref.read(alertMapNotifierProvider).selectedMode.name;
+      final origem = await placemarkFromCoordinates(route.first.latitude, route.first.longitude);
+      final destino = await placemarkFromCoordinates(route.last.latitude, route.last.longitude);
+
+      await ref.read(alertMapNotifierProvider.notifier).salvarRota(route, etaSeconds, mode, origem.first.street!, destino.first.street!);
+
     } catch (e) {
       ScaffoldMessenger.of(
         context,
@@ -318,7 +327,7 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
                     ),
                   ),
                 DraggableScrollableSheet(
-                  initialChildSize: 0.25,
+                  initialChildSize: 0.3,
                   minChildSize: 0.2,
                   maxChildSize: 0.6,
                   builder: (context, scrollController) {
@@ -524,6 +533,7 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
           ),
           SizedBox(height: 12),
           FloatingActionButton(
+            heroTag: '',
             backgroundColor: Theme.of(context).colorScheme.primary,
             child: Icon(Icons.warning_amber, color: Colors.amber),
             onPressed: () =>

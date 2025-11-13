@@ -5,5 +5,6 @@ class RoutePaths {
   static const String resetPassword = '/resetPassword';
   static const String home = '/home';
   static const String alertForm = '/alertForm';
-  static const String alarmHistoryScreen = '/alarmHistory';
+  static const String alertHistory = '/alertHistory';
+  static const String navigationHistory = '/navigationHistory';
 }

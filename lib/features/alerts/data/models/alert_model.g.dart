@@ -7,16 +7,16 @@ part of 'alert_model.dart';
 // **************************************************************************
 
 AlertModel _$AlertModelFromJson(Map<String, dynamic> json) => AlertModel(
-  uid: json['uid'] as String,
-  titulo: json['titulo'] as String,
-  descricao: json['descricao'] as String,
-  tipo: $enumDecode(_$AlertTypeEnumMap, json['tipo']),
-  risco: $enumDecode(_$AlertRiskEnumMap, json['risco']),
-  data: const TimestampConverter().fromJson(json['data'] as Object),
-  latitude: (json['latitude'] as num).toDouble(),
-  longitude: (json['longitude'] as num).toDouble(),
-  userId: json['userId'] as String,
-);
+      uid: json['uid'] as String,
+      titulo: json['titulo'] as String,
+      descricao: json['descricao'] as String,
+      tipo: $enumDecode(_$AlertTypeEnumMap, json['tipo']),
+      risco: $enumDecode(_$AlertRiskEnumMap, json['risco']),
+      data: const TimestampConverter().fromJson(json['data'] as Object),
+      latitude: (json['latitude'] as num).toDouble(),
+      longitude: (json['longitude'] as num).toDouble(),
+      userId: json['userId'] as String,
+    );
 
 Map<String, dynamic> _$AlertModelToJson(AlertModel instance) =>
     <String, dynamic>{

@@ -3,14 +3,15 @@ import 'package:latlong2/latlong.dart';
 import 'package:safeway/common/screens/loading_screen.dart';
 import 'package:safeway/core/configs/route_names.dart';
 import 'package:safeway/core/configs/route_paths.dart';
-import 'package:safeway/features/alerts/presentation/screens/alert_history_screen.dart';
 import 'package:safeway/features/alerts/presentation/screens/alert_form_screen.dart';
-import 'package:safeway/features/navigation/presentation/screens/alert_map_screen.dart';
+import 'package:safeway/features/alerts/presentation/screens/alert_history_screen.dart';
 import 'package:safeway/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:safeway/features/auth/presentation/screens/sign_in_screen.dart';
 import 'package:safeway/features/auth/presentation/screens/sign_up_screen.dart';
 
 import '../../common/screens/error_screen.dart';
+import '../../features/navigation/views/screens/alert_map_screen.dart';
+import '../../features/navigation/views/screens/navigation_history_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -52,9 +53,14 @@ class AppRouter {
         },
       ),
       GoRoute(
-        name: RouteNames.alarmHistoryScreen,
-        path: RoutePaths.alarmHistoryScreen,
-        builder: (context, state) => AlarmHistoryScreen(),
+        name: RouteNames.alertHistory,
+        path: RoutePaths.alertHistory,
+        builder: (context, state) => AlertHistoryScreen(),
+      ),
+      GoRoute(
+        name: RouteNames.navigationHistory,
+        path: RoutePaths.navigationHistory,
+        builder: (context, state) => NavigationHistoryScreen(),
       ),
     ],
   );

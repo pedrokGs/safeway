@@ -14,8 +14,8 @@ import 'package:safeway/features/alerts/domain/usecases/update_alert_use_case.da
 import 'package:safeway/features/alerts/domain/usecases/watch_all_alerts_use_case.dart';
 
 import '../../features/alerts/presentation/state/alert_form_state.dart';
-import '../../features/navigation/presentation/state/alert_map_state.dart';
-import '../../features/navigation/presentation/state/location_search_state.dart';
+import '../../features/navigation/viewmodel/state/alert_map_state.dart';
+import '../../features/navigation/viewmodel/state/location_search_state.dart';
 
 // Data
 final cloudFirestoreProvider = Provider<FirebaseFirestore>((ref) => FirebaseFirestore.instance,);
