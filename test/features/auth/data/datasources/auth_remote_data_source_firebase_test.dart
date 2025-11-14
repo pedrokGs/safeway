@@ -5,13 +5,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:safeway/core/di/auth_providers.dart';
 import 'package:safeway/features/auth/data/models/auth_user_model.dart';
-import 'package:safeway/features/auth/domain/exceptions/data_source_exception.dart';
+import 'package:safeway/common/exceptions/data_source_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/email_already_in_use_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/google_sign_in_cancelled_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/google_sign_in_failed_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/google_sign_in_interrupted_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/invalid_credentials_exception.dart';
-import 'package:safeway/features/auth/domain/exceptions/unknown_data_source_exception.dart';
+import 'package:safeway/common/exceptions/unknown_data_source_exception.dart';
 import 'package:safeway/features/auth/domain/exceptions/user_not_found_exception.dart';
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}

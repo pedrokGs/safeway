@@ -50,6 +50,7 @@ class SignInScreen extends ConsumerWidget {
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Form(
+          autovalidateMode: AutovalidateMode.onUnfocus,
           key: formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -25,6 +25,7 @@ class AppTheme {
         onSurface: isDark
           ? AppColors.darkTextPrimary
           : AppColors.lightTextPrimary,
+        primaryContainer: isDark ? AppColors.darkCard : AppColors.lightCard
       ),
     );
   }
