@@ -13,6 +13,7 @@ import 'package:safeway/features/alerts/domain/usecases/get_all_alerts_use_case.
 import 'package:safeway/features/alerts/domain/usecases/update_alert_use_case.dart';
 import 'package:safeway/features/alerts/domain/usecases/watch_all_alerts_use_case.dart';
 
+import '../../features/alerts/presentation/state/alert_filter_provider.dart';
 import '../../features/alerts/presentation/state/alert_form_state.dart';
 import '../../features/navigation/viewmodel/state/alert_map_state.dart';
 import '../../features/navigation/viewmodel/state/location_search_state.dart';
@@ -48,3 +49,8 @@ final locationSearchProvider =
 StateNotifierProvider<LocationSearchNotifier, LocationSearchState>((ref) {
   return LocationSearchNotifier();
 });
+
+
+final alertFilterProvider =
+StateNotifierProvider<AlertFilterNotifier, AlertFilterState>(
+        (ref) => AlertFilterNotifier());

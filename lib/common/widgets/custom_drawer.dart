@@ -113,12 +113,54 @@ class CustomDrawer extends ConsumerWidget {
                 ),
               ),
               onTap: () async {
-                Navigator.pop(context);
-                await signOutUseCase.call();
-                if (context.mounted) {
-                  GoRouter.of(context).goNamed('signIn');
+
+                final shouldLogout = await showDialog<bool>(
+                  context: context,
+                  builder: (context) {
+                    final theme = Theme.of(context);
+
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      title: Text(
+                        "Sair do SafeWay?",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      content: Text(
+                        "Você tem certeza que deseja sair da sua conta?",
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: Text(
+                            "Cancelar",
+                            style: TextStyle(color: theme.colorScheme.primary),
+                          ),
+                        ),
+                        FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: theme.colorScheme.error,
+                          ),
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text("Sair"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+
+                if (shouldLogout == true) {
+                  await signOutUseCase.call();
+                  if (context.mounted) {
+                    context.goNamed(RouteNames.signIn);
+                  }
                 }
               },
+
             ),
             const SizedBox(height: 8),
           ],

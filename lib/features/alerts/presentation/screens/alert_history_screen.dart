@@ -34,16 +34,6 @@ class _AlertHistoryScreenState extends ConsumerState<AlertHistoryScreen> {
             icon: Icon(Icons.menu),
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await themeNotifier.toggle();
-            },
-            icon: themeMode == ThemeMode.dark
-                ? Icon(Icons.dark_mode)
-                : Icon(Icons.light_mode),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Center(

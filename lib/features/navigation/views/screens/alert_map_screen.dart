@@ -3,7 +3,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:safeway/core/di/theme_providers.dart';
 import 'package:safeway/common/widgets/custom_drawer.dart';
@@ -69,11 +68,24 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
 
       final etaSeconds = ref.read(alertMapNotifierProvider).etaSeconds ?? 0;
       final mode = ref.read(alertMapNotifierProvider).selectedMode.name;
-      final origem = await placemarkFromCoordinates(route.first.latitude, route.first.longitude);
-      final destino = await placemarkFromCoordinates(route.last.latitude, route.last.longitude);
+      final origem = await placemarkFromCoordinates(
+        route.first.latitude,
+        route.first.longitude,
+      );
+      final destino = await placemarkFromCoordinates(
+        route.last.latitude,
+        route.last.longitude,
+      );
 
-      await ref.read(alertMapNotifierProvider.notifier).salvarRota(route, etaSeconds, mode, origem.first.street!, destino.first.street!);
-
+      await ref
+          .read(alertMapNotifierProvider.notifier)
+          .salvarRota(
+            route,
+            etaSeconds,
+            mode,
+            origem.first.street!,
+            destino.first.street!,
+          );
     } catch (e) {
       ScaffoldMessenger.of(
         context,
@@ -130,13 +142,26 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(alertMapNotifierProvider);
+
     final notifier = ref.read(alertMapNotifierProvider.notifier);
 
     final searchState = ref.watch(locationSearchProvider);
     final searchNotifier = ref.read(locationSearchProvider.notifier);
 
-    final themeMode = ref.watch(themeNotifierProvider);
-    final themeNotifier = ref.read(themeNotifierProvider.notifier);
+    final filter = ref.watch(alertFilterProvider);
+
+    var filteredAlerts = state.alerts;
+
+    if (filter.categorias.isNotEmpty) {
+      filteredAlerts = filteredAlerts
+          .where((a) => filter.categorias.contains(a.tipo))
+          .toList();
+    }
+
+    if (filter.riscos.isNotEmpty) {
+      filteredAlerts =
+          filteredAlerts.where((a) => filter.riscos.contains(a.risco)).toList();
+    }
 
     final cityBounds = LatLngBounds(
       LatLng(-22.572959, -47.477806),
@@ -154,16 +179,6 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
             icon: Icon(Icons.menu),
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await themeNotifier.toggle();
-            },
-            icon: themeMode == ThemeMode.dark
-                ? Icon(Icons.dark_mode)
-                : Icon(Icons.light_mode),
-          ),
-        ],
       ),
       body: (state.currentPosition == null || state.isLoading)
           ? Center(child: CircularProgressIndicator())
@@ -197,7 +212,7 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
                               final size = clusterSize.clamp(50.0, 100.0);
                               return Size(size, size);
                             },
-                            markers: state.alerts.map((alert) {
+                            markers: filteredAlerts.map((alert) {
                               return Marker(
                                 key: ValueKey(alert.uid),
                                 width: 40,

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:safeway/common/widgets/custom_drawer.dart';
@@ -43,16 +41,6 @@ class NavigationHistoryScreenState extends ConsumerState<NavigationHistoryScreen
             icon: const Icon(Icons.menu),
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await themeNotifier.toggle();
-            },
-            icon: themeMode == ThemeMode.dark
-                ? const Icon(Icons.dark_mode)
-                : const Icon(Icons.light_mode),
-          ),
-        ],
       ),
       body: ValueListenableBuilder(
         valueListenable: _routeBox.listenable(),
@@ -137,10 +125,10 @@ class NavigationHistoryScreenState extends ConsumerState<NavigationHistoryScreen
                           const SizedBox(height: 8),
 
                           Text(
-                              'Origem: ${origem}'
+                              'Origem: $origem'
                           ),
 
-                          Text('Destino: ${destino}'),
+                          Text('Destino: $destino'),
 
                           const SizedBox(height: 8,),
 

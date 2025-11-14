@@ -8,9 +8,11 @@ Future<List<String>> getAddressSuggestions(String query) async {
         '&format=json'
         '&addressdetails=1'
         '&limit=5'
+        '&autocomplete=1'
         '&viewbox=-47.475,-22.530,-47.330,-22.640'
         '&bounded=1',
   );
+
 
   final response = await http.get(url, headers: {
     'User-Agent': 'safeway-app/1.0 (pedibr5@gmail.com)',
