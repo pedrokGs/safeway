@@ -39,10 +39,11 @@ class _CustomFormTextFieldState extends State<CustomFormTextField> {
     return TextFormField(
       style: Theme.of(context).textTheme.bodyMedium,
       controller: widget.controller,
-      enabled: widget.isEnabled,
+      readOnly: !widget.isEnabled,
       obscureText: obscureText,
       onChanged: widget.onChanged,
       validator: widget.validator,
+
       decoration: InputDecoration(
         labelText: widget.labelText,
         border: OutlineInputBorder(

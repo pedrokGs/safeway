@@ -8,6 +8,10 @@ import 'package:safeway/features/alerts/presentation/screens/alert_history_scree
 import 'package:safeway/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:safeway/features/auth/presentation/screens/sign_in_screen.dart';
 import 'package:safeway/features/auth/presentation/screens/sign_up_screen.dart';
+import 'package:safeway/features/settings/views/screens/edit_profile_screen.dart';
+import 'package:safeway/features/settings/views/screens/help_screen.dart';
+import 'package:safeway/features/settings/views/screens/risk_visualization_screen.dart';
+import 'package:safeway/features/settings/views/screens/settings_screen.dart';
 
 import '../../common/screens/error_screen.dart';
 import '../../features/navigation/views/screens/alert_map_screen.dart';
@@ -61,6 +65,26 @@ class AppRouter {
         name: RouteNames.navigationHistory,
         path: RoutePaths.navigationHistory,
         builder: (context, state) => NavigationHistoryScreen(),
+      ),
+      GoRoute(
+        name: RouteNames.settingsScreen,
+        path: RoutePaths.settingsScreen,
+        builder: (context, state) => SettingsScreen(),
+      ),
+      GoRoute(
+        name: RouteNames.riskVisualization,
+        path: RoutePaths.riskVisualization,
+        builder: (context, state) => RiskVisualizationScreen(),
+      ),
+      GoRoute(
+        name: RouteNames.helpScreen,
+        path: RoutePaths.helpScreen,
+        builder: (context, state) => HelpScreen(),
+      ),
+      GoRoute(
+        name: RouteNames.editProfileScreen,
+        path: RoutePaths.editProfileScreen,
+        builder: (context, state) => EditProfileScreen(),
       ),
     ],
   );

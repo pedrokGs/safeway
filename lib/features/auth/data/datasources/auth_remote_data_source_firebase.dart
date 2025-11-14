@@ -94,7 +94,6 @@ class AuthRemoteDataSourceFirebase implements AuthRemoteDataSource {
         credential,
       );
       return userCredentials.user!.uid;
-
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled) {
         throw GoogleSignInCancelledException();

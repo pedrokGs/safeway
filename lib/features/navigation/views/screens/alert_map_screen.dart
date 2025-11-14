@@ -520,26 +520,13 @@ class _AlertMapScreenState extends ConsumerState<AlertMapScreen> {
                     : Container(),
               ],
             ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            child: Icon(Icons.location_searching, color: Colors.amber),
-            onPressed: () {
-              final currentPos = state.currentPosition!;
-              _mapController.move(currentPos, 20);
-            },
-          ),
-          SizedBox(height: 12),
-          FloatingActionButton(
-            heroTag: '',
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            child: Icon(Icons.warning_amber, color: Colors.amber),
-            onPressed: () =>
-                context.goNamed('alertForm', extra: state.currentPosition),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: Icon(Icons.location_searching, color: Colors.amber),
+        onPressed: () {
+          final currentPos = state.currentPosition!;
+          _mapController.move(currentPos, 20);
+        },
       ),
     );
   }

@@ -30,6 +30,11 @@ class CustomDrawer extends ConsumerWidget {
         icon: Icons.history,
         route: RouteNames.navigationHistory,
       ),
+      _DrawerItem(
+        label: 'Configurações',
+        icon: Icons.settings,
+        route: RouteNames.settingsScreen,
+      ),
     ];
 
     return Drawer(
