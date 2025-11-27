@@ -14,11 +14,18 @@ import 'package:safeway/features/auth/presentation/state/password_reset_state.da
 import 'package:safeway/features/auth/presentation/state/sign_in_state.dart';
 import 'package:safeway/features/auth/presentation/state/sign_up_state.dart';
 
+import '../../features/auth/domain/entities/auth_user_entity.dart';
+
 // Data
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance,);
 final googleSignInProvider = Provider<GoogleSignIn>((ref) => GoogleSignIn.instance,);
 final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>((ref) => AuthRemoteDataSourceFirebase(googleSignIn: ref.watch(googleSignInProvider), firebaseAuth: ref.watch(firebaseAuthProvider)));
 final authRepositoryProvider = Provider<AuthRepository>((ref) => AuthRepositoryImpl(dataSource: ref.watch(authRemoteDataSourceProvider)),);
+// Stream do usuário logado
+final authUserProvider = StreamProvider<AuthUserEntity?>((ref) {
+  final repo = ref.watch(authRepositoryProvider);
+  return repo.authUserChanges;
+});
 
 // Use Cases
 final signInWithEmailAndPasswordUseCaseProvider = Provider<SignInWithEmailAndPasswordUseCase>((ref) => SignInWithEmailAndPasswordUseCase(repository: ref.watch(authRepositoryProvider)),);

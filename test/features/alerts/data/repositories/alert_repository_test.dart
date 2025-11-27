@@ -117,21 +117,21 @@ void main(){
     },);
 
     test('should return UnauthenticatedException when user is not authenticated', () async {
-      when(() => dataSource.getAlertsByType(AlertType.acidente)).thenThrow(UnauthenticatedException());
+      when(() => dataSource.getAlertsByType(AlertType.acidentes)).thenThrow(UnauthenticatedException());
 
       final repository = container.read(alertRepositoryProvider);
 
-      await expectLater(repository.getAlertsByType(AlertType.acidente), throwsA(isA<UnauthenticatedException>()));
-      verify(() => dataSource.getAlertsByType(AlertType.acidente)).called(1);
+      await expectLater(repository.getAlertsByType(AlertType.acidentes), throwsA(isA<UnauthenticatedException>()));
+      verify(() => dataSource.getAlertsByType(AlertType.acidentes)).called(1);
     },);
 
     test('should return NetworkRequestFailedException when user is not connected to the internet', () async {
-      when(() => dataSource.getAlertsByType(AlertType.acidente)).thenThrow(NetworkRequestFailedException());
+      when(() => dataSource.getAlertsByType(AlertType.acidentes)).thenThrow(NetworkRequestFailedException());
 
       final repository = container.read(alertRepositoryProvider);
 
-      await expectLater(repository.getAlertsByType(AlertType.acidente), throwsA(isA<NetworkRequestFailedException>()));
-      verify(() => dataSource.getAlertsByType(AlertType.acidente)).called(1);
+      await expectLater(repository.getAlertsByType(AlertType.acidentes), throwsA(isA<NetworkRequestFailedException>()));
+      verify(() => dataSource.getAlertsByType(AlertType.acidentes)).called(1);
     },);
   },);
 

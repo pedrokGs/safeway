@@ -46,7 +46,7 @@ class SafewayApp extends ConsumerWidget {
       theme: AppTheme.getTheme(false),
       darkTheme: AppTheme.getTheme(true),
       themeMode: themeMode,
-      routerConfig: AppRouter.router,
+      routerConfig: ref.watch(goRouterProvider),
     );
   }
 }

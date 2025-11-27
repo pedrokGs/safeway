@@ -32,12 +32,16 @@ Map<String, dynamic> _$AlertModelToJson(AlertModel instance) =>
     };
 
 const _$AlertTypeEnumMap = {
-  AlertType.crime: 'crime',
-  AlertType.acidente: 'acidente',
+  AlertType.roubo: 'roubo',
+  AlertType.furto: 'furto',
+  AlertType.sequestro: 'sequestro',
+  AlertType.acidentes: 'acidentes',
+  AlertType.assedio: 'assedio',
+  AlertType.estupro: 'estupro',
+  AlertType.alagamento: 'alagamento',
   AlertType.incendio: 'incendio',
-  AlertType.deslizamento: 'deslizamento',
   AlertType.enchente: 'enchente',
-  AlertType.outro: 'outro',
+  AlertType.crime: 'crime',
 };
 
 const _$AlertRiskEnumMap = {
