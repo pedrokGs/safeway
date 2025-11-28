@@ -74,7 +74,29 @@ class CustomDrawer extends ConsumerWidget {
                 ],
               ),
             ),
-
+            const SizedBox(height: 24),
+            SizedBox(
+              width: 200,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => _openAlertSentDialog(context),
+                  );
+                },
+                child: Text(
+                  "Alertar Autoridades",
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: Colors.white),
+                ),
+              ),
+            ),
             Expanded(
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(vertical: 12),
@@ -113,7 +135,6 @@ class CustomDrawer extends ConsumerWidget {
                 ),
               ),
               onTap: () async {
-
                 final shouldLogout = await showDialog<bool>(
                   context: context,
                   builder: (context) {
@@ -160,9 +181,77 @@ class CustomDrawer extends ConsumerWidget {
                   }
                 }
               },
-
             ),
             const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _openAlertSentDialog(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 8,
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.check_circle_outline, color: Colors.green, size: 60),
+            const SizedBox(height: 16),
+            Text(
+              'Alerta enviado com sucesso!',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Sua localização foi enviada para as autoridades.',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Fecha o modal
+                },
+                child: Text(
+                  "Cancelar alerta",
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: Colors.white),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: () {
+                context.goNamed(RouteNames.alertDetails);
+              },
+              child: Text(
+                "Ver detalhes do aviso",
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.blueAccent),
+              ),
+            ),
           ],
         ),
       ),

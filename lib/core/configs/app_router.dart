@@ -1,8 +1,11 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:safeway/common/screens/loading_screen.dart';
 import 'package:safeway/core/configs/route_names.dart';
 import 'package:safeway/core/configs/route_paths.dart';
+import 'package:safeway/core/di/auth_providers.dart';
+import 'package:safeway/features/alerts/presentation/screens/alert_details.dart';
 import 'package:safeway/features/alerts/presentation/screens/alert_form_screen.dart';
 import 'package:safeway/features/alerts/presentation/screens/alert_history_screen.dart';
 import 'package:safeway/features/auth/presentation/screens/reset_password_screen.dart';
@@ -16,10 +19,27 @@ import 'package:safeway/features/settings/views/screens/settings_screen.dart';
 import '../../common/screens/error_screen.dart';
 import '../../features/navigation/views/screens/alert_map_screen.dart';
 import '../../features/navigation/views/screens/navigation_history_screen.dart';
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 
-class AppRouter {
-  static final GoRouter router = GoRouter(
+final goRouterProvider = Provider<GoRouter>((ref) {
+  final authUserStream = ref.watch(authUserProvider.stream);
+
+  return GoRouter(
     initialLocation: RoutePaths.signIn,
+    redirect: (context, state) {
+      final user = ref.read(authRepositoryProvider).currentUser;
+      final loggedIn = user != null;
+      final loggingIn =
+          state.uri.toString() == RoutePaths.signIn ||
+          state.uri.toString() == RoutePaths.signUp;
+
+      if (!loggedIn && !loggingIn) return RoutePaths.signIn;
+      if (loggedIn && loggingIn) return RoutePaths.home;
+
+      return null;
+    },
+
     errorBuilder: (context, state) =>
         ErrorScreen(errorMessage: 'Página não encontrada'),
     routes: [
@@ -86,6 +106,9 @@ class AppRouter {
         path: RoutePaths.editProfileScreen,
         builder: (context, state) => EditProfileScreen(),
       ),
+      GoRoute(name: RouteNames.alertDetails,
+      path: RoutePaths.alertDetails,
+      builder: (context, state) => AlertDetails(),)
     ],
   );
-}
+});

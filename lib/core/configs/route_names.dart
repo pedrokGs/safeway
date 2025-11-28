@@ -11,4 +11,5 @@ class RouteNames {
   static const String settingsScreen = 'settingsScreen';
   static const String riskVisualization = 'riskVisualization';
   static const String helpScreen = 'helpScreen';
+  static const String alertDetails = 'alertDetails';
 }

@@ -1,8 +1,13 @@
 enum AlertType {
-  crime,
-  acidente,
+  roubo,
+  furto,
+  sequestro,
+  acidentes,
+  assedio,
+  estupro,
+  alagamento,
   incendio,
-  deslizamento,
   enchente,
-  outro,
+  crime,
+  outro
 }
