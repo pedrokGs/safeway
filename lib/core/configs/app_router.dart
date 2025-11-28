@@ -5,6 +5,7 @@ import 'package:safeway/common/screens/loading_screen.dart';
 import 'package:safeway/core/configs/route_names.dart';
 import 'package:safeway/core/configs/route_paths.dart';
 import 'package:safeway/core/di/auth_providers.dart';
+import 'package:safeway/features/alerts/presentation/screens/alert_details.dart';
 import 'package:safeway/features/alerts/presentation/screens/alert_form_screen.dart';
 import 'package:safeway/features/alerts/presentation/screens/alert_history_screen.dart';
 import 'package:safeway/features/auth/presentation/screens/reset_password_screen.dart';
@@ -105,6 +106,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: RoutePaths.editProfileScreen,
         builder: (context, state) => EditProfileScreen(),
       ),
+      GoRoute(name: RouteNames.alertDetails,
+      path: RoutePaths.alertDetails,
+      builder: (context, state) => AlertDetails(),)
     ],
   );
 });
